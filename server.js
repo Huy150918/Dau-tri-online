@@ -13,7 +13,7 @@ const BOTS = {
   medium: { n: "Anh HyM (Vừa)", acc: 0.7, base: 2200, jit: 900 },
   hard:   { n: "Anh HyM (Khó)", acc: 0.9, base: 1100, jit: 500 }
 };
-const INTRO_MS = 1200, RESULT_MS = 1800, GRACE_MS = 900; // chờ giữa 2 câu = RESULT_MS + INTRO_MS = 3s
+const INTRO_MS = 2000, RESULT_MS = 3000, GRACE_MS = 900; // chờ giữa 2 câu = RESULT_MS + INTRO_MS = 5s
 
 const server = http.createServer((req, res) => {
   const url = (req.url || "/").split("?")[0];
