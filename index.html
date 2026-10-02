@@ -81,11 +81,11 @@ body.final .bar{outline:2px solid var(--gold);outline-offset:2px}
 /* result */
 .rt{font-family:"Baloo 2",sans-serif;font-weight:800;font-size:clamp(36px,11vw,54px);line-height:1;margin:6px 0 4px;text-align:center}
 .board{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
-.pc{border-radius:18px;padding:14px 8px;text-align:center;background:var(--card);border:3px solid var(--line)}
-.pc.win{border-color:var(--gold);box-shadow:0 0 0 4px color-mix(in srgb,var(--gold) 28%,transparent)}
-.pc .n{font-weight:700;font-size:14px;min-height:22px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.pc .s{font-family:"Baloo 2",sans-serif;font-weight:800;font-size:clamp(40px,12vw,58px);line-height:1}
-.pc.c0{color:var(--me)}.pc.c1{color:var(--op)}
+.pbox{border-radius:18px;padding:14px 8px;text-align:center;background:var(--card);border:3px solid var(--line)}
+.pbox.win{border-color:var(--gold);box-shadow:0 0 0 4px color-mix(in srgb,var(--gold) 28%,transparent)}
+.pbox .n{font-weight:700;font-size:14px;min-height:22px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pbox .s{font-family:"Baloo 2",sans-serif;font-weight:800;font-size:clamp(40px,12vw,58px);line-height:1}
+.pbox.c0{color:var(--me)}.pbox.c1{color:var(--op)}
 .log{border-radius:16px;background:var(--card);border:2px solid var(--line);overflow:hidden;margin-bottom:16px;font-size:13px}
 .row{display:grid;grid-template-columns:62px 1fr 1fr;align-items:center;padding:9px 12px;border-top:1px solid var(--line)}
 .row:first-child{border-top:0;font-weight:700;color:var(--muted)}
@@ -474,7 +474,7 @@ function onEnd(d){
   $("#e-sub").textContent=my===op?"Hai bạn ngang tài ngang sức.":"Chênh lệch "+Math.abs(my-op)+" điểm.";
   const bd=$("#e-board");bd.innerHTML="";
   [me,1-me].forEach((p,i)=>{
-    const c=document.createElement("div");c.className="pc c"+i+(d.scores[p]>d.scores[1-p]?" win":"");
+   const c=document.createElement("div");c.className="pbox c"+i+(d.scores[p]>d.scores[1-p]?" win":"");
     const n=document.createElement("div");n.className="n";n.textContent=(d.scores[p]>d.scores[1-p]?"👑 ":"")+d.names[p]+(p===me?" (bạn)":"");
     const s=document.createElement("div");s.className="s";s.textContent=d.scores[p];
     c.append(n,s);bd.appendChild(c);
