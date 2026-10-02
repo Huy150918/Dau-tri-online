@@ -4,6 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const { WebSocketServer } = require("ws");
 const { buildQuestions } = require("./questions");
+const multi = require("./multi");
 
 const PORT = process.env.PORT || 3000;
 const INDEX = path.join(__dirname, "index.html");
@@ -120,6 +121,8 @@ wss.on("connection", ws => {
   ws.on("message", raw => {
     let m; try { m = JSON.parse(raw); } catch { return; }
     if (!m || typeof m.t !== "string") return;
+    if (m.t.startsWith("m:") || m.t.startsWith("tl:") || m.t.startsWith("hb:")) return multi.handle(ws, m);
+    if (m.t === "create" || m.t === "bot" || m.t === "join") multi.leave(ws);
     if (m.t === "create") {
       leave(ws);
       const code = newCode(); if (!code) return send(ws, { t: "err", msg: "Máy chủ đang đầy, thử lại sau." });
@@ -155,7 +158,7 @@ wss.on("connection", ws => {
       leave(ws);
     }
   });
-  ws.on("close", () => leave(ws));
+  ws.on("close", () => { leave(ws); multi.leave(ws); });
   ws.on("error", () => {});
 });
 
