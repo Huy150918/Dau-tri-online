@@ -130,7 +130,7 @@ body.final .bar{outline:2px solid var(--gold);outline-offset:2px}
 <!-- Trang chủ -->
 <section id="s-auth" class="screen">
   <div class="wrap">
-    <h1 class="logo"><span class="a">Var Nhau</span><br><span class="b">TRÒ CHƠI</span></h1>
+    <h1 class="logo"><span class="a">Var Nhau</span></h1>
     <div class="tabs"><button id="a-t-login" class="on">Đăng nhập</button><button id="a-t-reg">Đăng ký</button></div>
     <label for="a-user">Tên đăng nhập</label>
     <input id="a-user" maxlength="14" autocomplete="username" placeholder="Nhập tên">
@@ -143,27 +143,36 @@ body.final .bar{outline:2px solid var(--gold);outline-offset:2px}
     <div class="or">hoặc</div>
     <button class="ghost" id="a-guest">Chơi với tư cách khách</button>
   </div>
+  <div class="foot">App này anh dành cho My ♥️</div>
 </section>
 
 <section id="s-menu" class="screen hidden">
   <div class="wrap">
     <p class="sub" id="m-hi"></p>
     <button class="card" id="m-vn"><b>Trò Var Nhau</b><span>Đấu trí 1 vs 1 trực tuyến, trả lời càng nhanh điểm càng cao</span></button>
-    <button class="card" id="m-hb"><b>Trò Đuổi Hình Bắt Chữ</b><span>Nhìn hình, đoán chữ</span></button>
-    <button class="card" id="m-tl"><b>Tiến lên</b><span>Chơi cùng máy, 2 – 4 người</span></button>
+    <button class="card" id="m-hb"><b>Trò Đuổi Hình Bắt Chữ</b><span>Nhìn hình đoán chữ, chơi một mình hoặc 2 người</span></button>
+    <button class="card" id="m-tl"><b>Tiến lên</b><span>Tạo phòng chơi cùng bạn bè, 2 – 4 người</span></button>
     <button class="ghost" id="m-out" style="margin-top:6px">Đăng xuất</button>
   </div>
+  <div class="foot">App này anh dành cho My ♥️</div>
 </section>
 
 <section id="s-tl" class="screen hidden">
   <div class="wrap" style="max-width:560px">
-    <button class="back" id="t-back">← Menu</button>
+    <button class="back" id="t-back">← Trở về</button>
     <div id="t-setup">
       <h2 class="rt">Tiến lên</h2>
-      <p class="sub">Chọn số người chơi (bạn và các máy):</p>
-      <button class="card" data-tl="2"><b>2 người</b><span>Bạn đấu với 1 máy</span></button>
-      <button class="card" data-tl="3"><b>3 người</b><span>Bạn đấu với 2 máy</span></button>
-      <button class="card" data-tl="4"><b>4 người</b><span>Bạn đấu với 3 máy</span></button>
+      <p class="sub">Tạo phòng rồi gửi mã cho bạn bè (2 – 4 người):</p>
+      <div class="bots"><button class="ghost" data-tl="2">2 người</button><button class="ghost" data-tl="3">3 người</button><button class="ghost" data-tl="4">4 người</button></div>
+      <div class="or">hoặc vào phòng có sẵn</div>
+      <div class="joinrow"><input id="t-codein" maxlength="4" placeholder="MÃ" autocomplete="off" autocapitalize="characters" aria-label="Mã phòng"><button class="ghost" id="t-join">Vào</button></div>
+      <div class="err" id="t-err" role="alert"></div>
+    </div>
+    <div id="t-lobby" class="hidden" style="text-align:center">
+      <p class="sub">Mã phòng</p>
+      <div class="code" id="t-code"></div>
+      <p class="sub pulse" id="t-wait"></p>
+      <button class="ghost" id="t-share">Chia sẻ mã phòng</button>
     </div>
     <div id="t-game" class="hidden">
       <div class="opps" id="t-opps"></div>
@@ -177,15 +186,30 @@ body.final .bar{outline:2px solid var(--gold);outline-offset:2px}
       <div id="t-rank" style="text-align:left;margin:12px 0 18px"></div>
       <button class="btn" id="t-again">Chơi lại</button>
       <div style="height:10px"></div>
-      <button class="ghost" id="t-change">Đổi số người</button>
+      <button class="ghost" id="t-home">Trở về</button>
     </div>
   </div>
 </section>
 
 <section id="s-hbbc" class="screen hidden">
   <div class="wrap">
-    <button class="back" id="h-back">← Menu</button>
-    <div id="h-play">
+    <button class="back" id="h-back">← Trở về</button>
+    <div id="h-setup">
+      <h2 class="rt">Đuổi Hình Bắt Chữ</h2>
+      <button class="btn" id="h-solo">Chơi một mình</button>
+      <div class="or">hoặc chơi 2 người</div>
+      <button class="ghost" id="h-create">Tạo phòng</button>
+      <div style="height:10px"></div>
+      <div class="joinrow"><input id="h-codein" maxlength="4" placeholder="MÃ" autocomplete="off" autocapitalize="characters" aria-label="Mã phòng"><button class="ghost" id="h-join">Vào</button></div>
+      <div class="err" id="h-err" role="alert"></div>
+    </div>
+    <div id="h-lobby" class="hidden" style="text-align:center">
+      <p class="sub">Mã phòng</p>
+      <div class="code" id="h-code"></div>
+      <p class="sub pulse" id="h-wait"></p>
+      <button class="ghost" id="h-share">Chia sẻ mã phòng</button>
+    </div>
+    <div id="h-play" class="hidden">
       <div class="hrow"><span id="h-n"></span><span id="h-s"></span></div>
       <div class="emo" id="h-emo"></div>
       <div class="blanks" id="h-blanks"></div>
@@ -199,14 +223,14 @@ body.final .bar{outline:2px solid var(--gold);outline-offset:2px}
       <div class="emo" id="h-final"></div>
       <button class="btn" id="h-again">Chơi lại</button>
       <div style="height:10px"></div>
-      <button class="ghost" id="h-menu">Về menu</button>
+      <button class="ghost" id="h-home">Trở về</button>
     </div>
   </div>
 </section>
 
 <section id="s-home" class="screen hidden">
   <div class="wrap">
-    <button class="back" id="b-menu">← Menu</button>
+    <button class="back" id="b-menu">← Trở về</button>
     <h1 class="logo"><span class="a">Var Nhau</span><br><span class="b">1 vs 1</span></h1>
     <label for="name">Tên của bạn</label>
     <input id="name" maxlength="14" placeholder="Nhập tên" autocomplete="off">
@@ -283,7 +307,7 @@ body.final .bar{outline:2px solid var(--gold);outline-offset:2px}
 "use strict";
 const $=s=>document.querySelector(s);
 const MAXT=5000, LET=["A","B","C","D"];
-let ws=null, me=0, names=["",""], scores=[0,0], phase="home", t0=0, raf=0, locked=false, cur={n:1,final:false}, tm=[];
+let curErr="#err", ws=null, me=0, names=["",""], scores=[0,0], phase="home", t0=0, raf=0, locked=false, cur={n:1,final:false}, tm=[];
 
 function show(id){["auth","menu","home","hbbc","tl","lobby","game","end"].forEach(k=>$("#s-"+k).classList.toggle("hidden",k!==id));}
 function toast(m){const t=document.createElement("div");t.className="toast";t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2600);}
@@ -300,13 +324,14 @@ function beep(f,d,ty,v,dl){if(!AC)return;try{const o=AC.createOscillator(),g=AC.
 /* ---- Kết nối ---- */
 function connect(cb){
   if(ws&&ws.readyState===1){cb();return;}
-  $("#err").textContent="Đang kết nối máy chủ…";
+  $(curErr).textContent="Đang kết nối máy chủ…";
   let opened=false;
-  try{ws=new WebSocket((location.protocol==="https:"?"wss://":"ws://")+location.host);}catch(e){$("#err").textContent="Không kết nối được máy chủ.";return;}
-  ws.onopen=()=>{opened=true;$("#err").textContent="";cb();};
+  try{ws=new WebSocket((location.protocol==="https:"?"wss://":"ws://")+location.host);}catch(e){$(curErr).textContent="Không kết nối được máy chủ.";return;}
+  ws.onopen=()=>{opened=true;$(curErr).textContent="";cb();};
   ws.onmessage=e=>{let d;try{d=JSON.parse(e.data);}catch{return;}handle(d);};
   ws.onclose=()=>{
-    if(!opened){$("#err").textContent="Không kết nối được máy chủ. Máy chủ miễn phí có thể cần ~30 giây để thức dậy, hãy thử lại.";return;}
+    if(!opened){$(curErr).textContent="Không kết nối được máy chủ. Máy chủ miễn phí có thể cần ~30 giây để thức dậy, hãy thử lại.";return;}
+    if(mp){toast("Mất kết nối với máy chủ");mp=null;TL=null;clearTimeout(hT);clearInterval(hCd);show("menu");return;}
     if(phase!=="home"){toast("Mất kết nối với máy chủ");goHome();}
   };
 }
@@ -336,6 +361,7 @@ $("#b-home").onclick=()=>{send({t:"leave"});goHome();};
 
 /* ---- Xử lý tin nhắn từ máy chủ ---- */
 function handle(d){
+  if(/^(m|tl|hb):/.test(d.t))return mpHandle(d);
   switch(d.t){
     case "err": $("#err").textContent=d.msg||"Có lỗi xảy ra."; break;
     case "room":
@@ -504,11 +530,116 @@ $("#a-go").onclick=async()=>{
 };
 $("#a-pw").addEventListener("keydown",e=>{if(e.key==="Enter")$("#a-go").click();});
 $("#a-guest").onclick=()=>{audio();setUser({name:"Khách"+(100+Math.floor(Math.random()*900)),guest:true});};
-$("#m-vn").onclick=()=>{phase="home";show("home");};
+$("#m-vn").onclick=()=>{phase="home";curErr="#err";show("home");};
 $("#m-hb").onclick=()=>{audio();hbStart();};
 $("#m-out").onclick=()=>{store("user","");user=null;show("auth");};
 $("#b-menu").onclick=()=>show("menu");
 
+/* ---- Phòng nhiều người: Tiến lên, Đuổi hình bắt chữ ---- */
+let mp=null,TL=null,hT=0,hCd=0;
+const tlSel=new Set();
+const myName=()=>(user&&user.name)||$("#name").value.trim();
+function mpSend(errSel,msg){curErr=errSel;$(errSel).textContent="";connect(()=>send(msg));}
+async function shareText(text,code){try{if(navigator.share){await navigator.share({text});return;}}catch(e){return;}try{await navigator.clipboard.writeText(text);toast("Đã sao chép lời mời");}catch(e){toast("Mã phòng: "+code);}}
+const view=(p,ids,id)=>ids.forEach(k=>$("#"+p+"-"+k).classList.toggle("hidden",k!==id));
+const tlView=id=>view("t",["setup","lobby","game","end"],id),hbView=id=>view("h",["setup","lobby","play","end"],id);
+function toMenu(){if(mp)send({t:"m:leave"});mp=null;TL=null;clearTimeout(hT);clearInterval(hCd);show("menu");}
+function joinRoom(game,inp,err){audio();const c=$(inp).value.trim().toUpperCase();if(c.length!==4){$(err).textContent="Mã phòng gồm 4 chữ cái.";return;}mpSend(err,{t:"m:join",game,code:c,name:myName()});}
+$("#m-tl").onclick=()=>{audio();mp=null;TL=null;tlView("setup");$("#t-err").textContent="";show("tl");};
+$("#m-hb").onclick=()=>{audio();mp=null;clearTimeout(hT);clearInterval(hCd);hbView("setup");$("#h-err").textContent="";show("hbbc");};
+$("#t-back").onclick=$("#h-back").onclick=$("#t-home").onclick=$("#h-home").onclick=toMenu;
+document.querySelectorAll("[data-tl]").forEach(b=>{b.onclick=()=>{audio();mpSend("#t-err",{t:"m:create",game:"tl",name:myName(),n:+b.dataset.tl});};});
+$("#t-join").onclick=()=>joinRoom("tl","#t-codein","#t-err");
+$("#t-codein").addEventListener("keydown",e=>{if(e.key==="Enter")$("#t-join").click();});
+$("#h-create").onclick=()=>{audio();mpSend("#h-err",{t:"m:create",game:"hb",name:myName()});};
+$("#h-join").onclick=()=>joinRoom("hb","#h-codein","#h-err");
+$("#h-codein").addEventListener("keydown",e=>{if(e.key==="Enter")$("#h-join").click();});
+$("#t-share").onclick=()=>{if(mp)shareText("Vào chơi Tiến lên với mình! Mã phòng: "+mp.code+"\n"+location.origin,mp.code);};
+$("#h-share").onclick=()=>{if(mp)shareText("Vào chơi Đuổi Hình Bắt Chữ với mình! Mã phòng: "+mp.code+"\n"+location.origin,mp.code);};
+
+function mpHandle(d){
+  switch(d.t){
+    case "m:err":toast(d.msg);$(curErr).textContent=d.msg;break;
+    case "m:room":onMRoom(d);break;
+    case "m:left":toast(d.name+" đã thoát phòng");mp=null;TL=null;clearTimeout(hT);clearInterval(hCd);show("menu");break;
+    case "m:rematch":toast("Mọi người muốn chơi lại!");break;
+    case "tl:state":onTlState(d);break;
+    case "tl:end":onTlEnd(d);break;
+    case "hb:q":onHbQ(d);break;
+    case "hb:no":{const f=$("#h-feed");f.style.color="var(--bad)";f.textContent="Chưa đúng, thử lại nhé!";beep(247,.2,"sine",.035);break;}
+    case "hb:hint":if(hbRound)$("#h-blanks").textContent=hbBl(hbRound.w,d.f);break;
+    case "hb:res":onHbRes(d);break;
+    case "hb:end":onHbEnd(d);break;
+  }
+}
+function onMRoom(d){
+  mp={game:d.game,code:d.code,you:d.you,names:d.names,max:d.max};
+  const p=d.game==="tl"?"t":"h";
+  $("#"+p+"-code").textContent=d.code;
+  $("#"+p+"-wait").textContent=d.full?"Đủ người rồi, sắp bắt đầu…":"Đã có "+d.names.length+"/"+d.max+" người. Đang chờ thêm người nhập mã này…";
+  $("#"+p+"-wait").classList.toggle("pulse",!d.full);
+  if(d.game==="tl"){tlView("lobby");show("tl");}else{hbView("lobby");show("hbbc");}
+}
+
+/* ---- Tiến lên ---- (lá bài là số 0..51: hạng*4+chất) */
+const RK=["3","4","5","6","7","8","9","10","J","Q","K","A","2"],ST=["♠","♣","♦","♥"];
+const esc=s=>String(s).replace(/[<>&"]/g,"");
+function cls(ids){
+  const n=ids.length;if(!n)return null;
+  const a=ids.slice().sort((x,y)=>x-y),r=a.map(x=>x>>2),key=a[n-1];
+  if(n<=4&&r.every(x=>x===r[0]))return{type:["single","pair","triple","quad"][n-1],len:n,key,two:r[0]===12};
+  if(n>=3&&r.every((x,i)=>x<12&&(i===0||x===r[i-1]+1)))return{type:"straight",len:n,key};
+  if(n>=6&&n%2===0){for(let i=0;i<n;i+=2){if(r[i]!==r[i+1]||r[i]>=12||(i>0&&r[i]!==r[i-2]+1))return null;}return{type:"pairthru",len:n/2,key};}
+  return null;
+}
+function beats(p,c){
+  if(c.type===p.type&&c.len===p.len)return c.key>p.key;
+  if(p.type==="single"&&p.two)return c.type==="quad"||(c.type==="pairthru"&&c.len>=3);
+  if(p.type==="pair"&&p.two)return c.type==="quad"||(c.type==="pairthru"&&c.len>=4);
+  if(p.type==="pairthru"&&p.len===3)return c.type==="quad"||(c.type==="pairthru"&&c.len>=4);
+  if(p.type==="quad")return c.type==="pairthru"&&c.len>=4;
+  return false;
+}
+function cardEl(id,x){const s=id&3;return'<div class="pc'+(s>=2?" red":"")+(x||"")+'"><b>'+RK[id>>2]+"</b><i>"+ST[s]+"</i></div>";}
+function onTlState(d){
+  const prev=TL&&TL.last?TL.last.ids.join():"";
+  TL=d;TL.over=false;
+  Array.from(tlSel).forEach(id=>{if(!d.hand.includes(id))tlSel.delete(id);});
+  $("#t-again").disabled=false;$("#t-again").textContent="Chơi lại";
+  tlView("game");show("tl");
+  if(d.last&&d.last.ids.join()!==prev)beep(392,.1,"sine",.05);
+  tlRender();
+}
+function tlRender(){
+  const T=TL;if(!T)return;const my=T.turn===T.you&&!T.over;
+  $("#t-opps").innerHTML=T.names.map((nm,i)=>i===T.you?"":'<div class="opp'+(T.turn===i&&!T.over?" on":"")+(T.passed[i]?" ps":"")+'"><b>'+esc(nm)+"</b><span>🂠 "+T.counts[i]+"</span><em>"+(T.passed[i]?"bỏ lượt":(T.turn===i&&!T.over?"đang nghĩ…":""))+"</em></div>").join("");
+  $("#t-table").innerHTML=T.last?"<span>"+esc(T.names[T.last.by])+(T.last.by===T.you?" (bạn)":"")+' đánh</span><div class="cs">'+T.last.ids.map(id=>cardEl(id," mini")).join("")+"</div>":"<span>Vòng mới: "+esc(T.names[T.turn])+(T.turn===T.you?" (bạn)":"")+" đi đầu</span>";
+  $("#t-msg").textContent=T.over?"":(my?(T.last?"Đến lượt bạn: chặt hoặc bỏ lượt":"Bạn đi đầu: chọn bài rồi bấm Đánh"):"Đang chờ "+T.names[T.turn]+"…");
+  $("#t-hand").innerHTML=T.hand.map(id=>cardEl(id,tlSel.has(id)?" sel":"").replace("<div",'<div data-id="'+id+'"')).join("");
+  $("#t-hand").querySelectorAll(".pc").forEach(el=>{el.onclick=()=>{if(!my)return;const id=+el.dataset.id;tlSel.has(id)?tlSel.delete(id):tlSel.add(id);beep(494,.06,"sine",.03);tlRender();};});
+  ["#t-play","#t-pass","#t-clear"].forEach(s=>{$(s).disabled=!my;});
+}
+$("#t-play").onclick=()=>{
+  if(!TL||TL.over||TL.turn!==TL.you)return;
+  const ids=TL.hand.filter(id=>tlSel.has(id));
+  if(!ids.length)return toast("Chọn bài trước đã nhé.");
+  const c=cls(ids);if(!c)return toast("Bộ bài không hợp lệ.");
+  if(TL.last&&!beats(cls(TL.last.ids),c))return toast("Bài chưa đủ lớn để chặt.");
+  tlSel.clear();send({t:"tl:play",ids});
+};
+$("#t-pass").onclick=()=>{if(!TL||TL.over||TL.turn!==TL.you)return;if(!TL.last)return toast("Bạn đang đi đầu, hãy đánh một bộ.");tlSel.clear();send({t:"tl:pass"});};
+$("#t-clear").onclick=()=>{tlSel.clear();tlRender();};
+function onTlEnd(d){
+  if(!TL)return;TL.over=true;tlRender();
+  const rows=d.names.map((nm,i)=>({nm,l:d.counts[i]})).sort((a,b)=>a.l-b.l);
+  $("#t-title").textContent=d.winner===TL.you?"Bạn thắng! 🎉":esc(d.names[d.winner])+" thắng";
+  $("#t-rank").innerHTML=rows.map((r,k)=>'<div class="row2">'+(k+1)+". "+esc(r.nm)+(r.l?" — còn "+r.l+" lá":" — hết bài")+"</div>").join("");
+  tlView("end");
+  if(d.winner===TL.you)[523,659,784].forEach((f,i)=>beep(f,.2,"sine",.05,i*.14));
+}
+$("#t-again").onclick=()=>{send({t:"m:again"});$("#t-again").disabled=true;$("#t-again").textContent="Chờ mọi người…";};
+
+/* ---- Đuổi hình bắt chữ ---- */
 const HB=[
  {e:["☀️","🌻"],a:["hoa hướng dương","hướng dương"]},
  {e:["🚒","🔥"],a:["xe cứu hỏa","cứu hỏa"]},
@@ -526,21 +657,24 @@ const HB=[
  {e:["⛈️","⚡"],a:["sấm sét","sấm chớp","sét","giông bão","bão"]}
 ];
 const hnorm=s=>s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/đ/g,"d").replace(/[^a-z0-9]/g,"");
-let hq=[],hi=0,hs=0,hh=false,hlock=false,hT=0;
-function hbStart(){clearTimeout(hT);hq=HB.slice().sort(()=>Math.random()-.5).slice(0,8);hi=0;hs=0;$("#h-play").classList.remove("hidden");$("#h-end").classList.add("hidden");show("hbbc");hbShow();}
-function hbBlanks(){const w=hq[hi].a[0].split(" ");return w.map(x=>Array.from(x).map((c,i)=>hh&&i===0?c.toUpperCase():"_").join(" ")).join("   ");}
+let hq=[],hi=0,hs=0,hh=false,hlock=false,hbMode="solo",hbRound=null;
+const hbTiles=a=>a.map((x,k)=>(k?'<span class="eplus">+</span>':"")+'<div class="etile" style="animation-delay:'+(k*.2)+'s">'+x+"</div>").join("");
+const hbBl=(w,f)=>w.map((n,k)=>Array.from({length:n},(_,i)=>f&&i===0?f[k].toUpperCase():"_").join(" ")).join("   ");
+const hbWords=a=>a.split(" ").map(x=>Array.from(x).length),hbFirsts=a=>a.split(" ").map(x=>Array.from(x)[0]);
+function hbSolo(){hbMode="solo";hbRound=null;clearTimeout(hT);clearInterval(hCd);hq=HB.slice().sort(()=>Math.random()-.5).slice(0,8);hi=0;hs=0;$("#h-hint").classList.remove("hidden");$("#h-skip").classList.remove("hidden");show("hbbc");hbView("play");hbShow();}
+$("#h-solo").onclick=()=>{audio();hbSolo();};
 function hbShow(){
-  if(hi>=hq.length){$("#h-play").classList.add("hidden");$("#h-end").classList.remove("hidden");$("#h-final").textContent=hs+" / "+hq.length*10;return;}
-  hh=false;hlock=false;
+  if(hi>=hq.length){$("#h-title").textContent="Hoàn thành!";$("#h-final").textContent=hs+" / "+hq.length*10;$("#h-again").disabled=false;$("#h-again").textContent="Chơi lại";hbView("end");return;}
+  hh=false;hlock=false;const p=hq[hi];
   $("#h-n").textContent="Câu "+(hi+1)+"/"+hq.length;$("#h-s").textContent="Điểm: "+hs;
-  $("#h-emo").classList.remove("win");$("#h-emo").innerHTML=hq[hi].e.map((x,k)=>(k?'<span class="eplus">+</span>':"")+'<div class="etile" style="animation-delay:'+(k*.2)+'s">'+x+"</div>").join("");$("#h-blanks").textContent=hbBlanks();
+  $("#h-emo").classList.remove("win");$("#h-emo").innerHTML=hbTiles(p.e);$("#h-blanks").textContent=hbBl(hbWords(p.a[0]));
   $("#h-in").value="";$("#h-in").disabled=false;$("#h-feed").textContent="";$("#h-hint").disabled=false;
 }
 function hbNext(ms){hlock=true;hT=setTimeout(()=>{hi++;hbShow();},ms);}
 function hbCheck(){
-  if(hlock)return;
-  const v=hnorm($("#h-in").value);if(!v)return;
-  const f=$("#h-feed");
+  const raw=$("#h-in").value.trim();
+  if(hbMode==="room"){if(raw&&!hlock)send({t:"hb:ans",text:raw});return;}
+  if(hlock)return;const v=hnorm(raw);if(!v)return;const f=$("#h-feed");
   if(hq[hi].a.some(x=>hnorm(x)===v)){
     const p=hh?5:10;hs+=p;$("#h-s").textContent="Điểm: "+hs;
     $("#h-emo").classList.add("win");f.style.color="var(--ok)";f.textContent="Chính xác! +"+p;beep(659,.18,"sine",.05);hbNext(900);
@@ -548,115 +682,34 @@ function hbCheck(){
 }
 $("#h-ok").onclick=hbCheck;
 $("#h-in").addEventListener("keydown",e=>{if(e.key==="Enter")hbCheck();});
-$("#h-hint").onclick=()=>{if(hlock||hh)return;hh=true;$("#h-blanks").textContent=hbBlanks();$("#h-hint").disabled=true;};
-$("#h-skip").onclick=()=>{if(hlock)return;const f=$("#h-feed");f.style.color="var(--muted)";f.textContent="Đáp án: "+hq[hi].a[0];hbNext(1400);};
-$("#h-back").onclick=$("#h-menu").onclick=()=>{clearTimeout(hT);show("menu");};
-$("#h-again").onclick=hbStart;
-
-/* ---- Tiến lên (chơi với máy) ---- */
-const RK=["3","4","5","6","7","8","9","10","J","Q","K","A","2"],ST=["♠","♣","♦","♥"];
-let TL=null,tlT=0;const tlSel=new Set();
-const cv=c=>c.r*4+c.s,esc=s=>String(s).replace(/[<>&"]/g,"");
-function shuf(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
-function cls(cs){
-  const n=cs.length;if(!n)return null;
-  const a=cs.slice().sort((x,y)=>cv(x)-cv(y)),key=cv(a[n-1]);
-  if(a.every(c=>c.r===a[0].r)&&n<=4)return{type:["single","pair","triple","quad"][n-1],len:n,key,two:a[0].r===12};
-  if(n>=3&&a.every((c,i)=>c.r<12&&(i===0||c.r===a[i-1].r+1)))return{type:"straight",len:n,key};
-  if(n>=6&&n%2===0){for(let i=0;i<n;i+=2){if(a[i].r!==a[i+1].r||a[i].r>=12||(i>0&&a[i].r!==a[i-2].r+1))return null;}return{type:"pairthru",len:n/2,key};}
-  return null;
+$("#h-hint").onclick=()=>{if(hbMode!=="solo"||hlock||hh)return;hh=true;const a=hq[hi].a[0];$("#h-blanks").textContent=hbBl(hbWords(a),hbFirsts(a));$("#h-hint").disabled=true;};
+$("#h-skip").onclick=()=>{if(hbMode!=="solo"||hlock)return;const f=$("#h-feed");f.style.color="var(--muted)";f.textContent="Đáp án: "+hq[hi].a[0];hbNext(1400);};
+$("#h-again").onclick=()=>{if(hbMode==="room"){send({t:"m:again"});$("#h-again").disabled=true;$("#h-again").textContent="Chờ đối thủ…";}else hbSolo();};
+/* chế độ 2 người (qua phòng) */
+function hbScore(sc){if(mp)$("#h-s").textContent="Bạn "+sc[mp.you]+" – "+sc[1-mp.you]+" "+esc(mp.names[1-mp.you]);}
+function hbTick(){if(!hbRound)return;const l=Math.max(0,Math.ceil((hbRound.end-Date.now())/1000));$("#h-n").textContent="Câu "+hbRound.n+"/"+hbRound.total+" · "+l+"s";}
+function onHbQ(d){
+  if(!mp)return;hbMode="room";hlock=false;hbRound={n:d.n,total:d.total,w:d.w,end:Date.now()+d.ms};
+  $("#h-hint").classList.add("hidden");$("#h-skip").classList.add("hidden");
+  $("#h-again").disabled=false;$("#h-again").textContent="Chơi lại";
+  show("hbbc");hbView("play");hbScore(d.scores);
+  $("#h-emo").classList.remove("win");$("#h-emo").innerHTML=hbTiles(d.e);$("#h-blanks").textContent=hbBl(d.w);
+  $("#h-in").value="";$("#h-in").disabled=false;$("#h-feed").textContent="";
+  clearInterval(hCd);hCd=setInterval(hbTick,250);hbTick();
 }
-function beats(p,c){
-  if(c.type===p.type&&c.len===p.len)return c.key>p.key;
-  if(p.type==="single"&&p.two)return c.type==="quad"||(c.type==="pairthru"&&c.len>=3);
-  if(p.type==="pair"&&p.two)return c.type==="quad"||(c.type==="pairthru"&&c.len>=4);
-  if(p.type==="pairthru"&&p.len===3)return c.type==="quad"||(c.type==="pairthru"&&c.len>=4);
-  if(p.type==="quad")return c.type==="pairthru"&&c.len>=4;
-  return false;
+function onHbRes(d){
+  if(!mp)return;clearInterval(hCd);hlock=true;$("#h-in").disabled=true;hbScore(d.scores);
+  const f=$("#h-feed");$("#h-blanks").textContent=d.answer.toUpperCase();
+  if(d.winner===mp.you){$("#h-emo").classList.add("win");f.style.color="var(--ok)";f.textContent="Chính xác! +10";beep(659,.18,"sine",.05);}
+  else if(d.winner>=0){f.style.color="var(--bad)";f.textContent=esc(mp.names[d.winner])+" đã đoán đúng trước!";beep(247,.2,"sine",.035);}
+  else{f.style.color="var(--muted)";f.textContent="Hết giờ! Không ai đoán được.";}
 }
-function pick_k(arr,k){const out=[];(function f(s,cur){if(cur.length===k){out.push(cur.slice());return;}for(let i=s;i<arr.length;i++){cur.push(arr[i]);f(i+1,cur);cur.pop();}})(0,[]);return out;}
-function allCombos(hand){
-  const by=Array.from({length:13},()=>[]);hand.forEach(c=>by[c.r].push(c));by.forEach(g=>g.sort((a,b)=>a.s-b.s));
-  const out=hand.map(c=>[c]);
-  by.forEach(g=>[2,3,4].forEach(k=>{if(g.length>=k)pick_k(g,k).forEach(x=>out.push(x));}));
-  for(let s=0;s<12;s++){
-    for(let e=s;e<12&&by[e].length;e++)if(e-s>=2){out.push(by.slice(s,e+1).map(g=>g[0]));out.push(by.slice(s,e+1).map(g=>g[g.length-1]));}
-    for(let e=s;e<12&&by[e].length>=2;e++)if(e-s>=2){out.push(by.slice(s,e+1).flatMap(g=>g.slice(0,2)));out.push(by.slice(s,e+1).flatMap(g=>g.slice(-2)));}
-  }
-  return out;
+function onHbEnd(d){
+  if(!mp)return;clearInterval(hCd);const a=d.scores[mp.you],b=d.scores[1-mp.you];
+  $("#h-title").textContent=a>b?"Bạn thắng! 🎉":a<b?esc(mp.names[1-mp.you])+" thắng":"Hòa nhau!";
+  $("#h-final").textContent=a+" – "+b;hbView("end");
+  if(a>=b)[392,494,587].forEach((f,i)=>beep(f,.2,"sine",.05,i*.14));
 }
-function botMove(hand,last){
-  let cand=allCombos(hand).map(cs=>({cs,c:cls(cs)})).filter(x=>x.c);
-  const bomb=x=>x.c.type==="quad"||x.c.type==="pairthru",has2=x=>x.cs.some(c=>c.r===12);
-  if(!last){
-    let pool=cand.filter(x=>!bomb(x)&&!has2(x));if(!pool.length)pool=cand.filter(x=>!bomb(x));if(!pool.length)pool=cand;
-    pool.sort((a,b)=>b.cs.length-a.cs.length||a.c.key-b.c.key);return pool[0].cs;
-  }
-  const useBomb=hand.length<=8||last.c.two;
-  const pool=cand.filter(x=>beats(last.c,x.c)&&(!bomb(x)||useBomb));
-  if(!pool.length)return null;
-  pool.sort((a,b)=>(bomb(a)-bomb(b))||a.c.key-b.c.key);return pool[0].cs;
-}
-function cardEl(c,x){return'<div class="pc'+(c.s>=2?" red":"")+(x||"")+'"><b>'+RK[c.r]+"</b><i>"+ST[c.s]+"</i></div>";}
-function tlStart(n){
-  clearTimeout(tlT);
-  const d=[];for(let r=0;r<13;r++)for(let s=0;s<4;s++)d.push({r,s});shuf(d);
-  const hands=Array.from({length:n},(_,i)=>d.slice(i*13,i*13+13).sort((a,b)=>cv(a)-cv(b)));
-  let first=0,min=1e9;hands.forEach((hd,i)=>{if(cv(hd[0])<min){min=cv(hd[0]);first=i;}});
-  TL={n,hands,turn:first,last:null,passed:new Array(n).fill(false),over:false,names:[user?user.name:"Bạn"].concat(Array.from({length:n-1},(_,i)=>"Máy "+(i+1)))};
-  tlSel.clear();show("tl");$("#t-setup").classList.add("hidden");$("#t-end").classList.add("hidden");$("#t-game").classList.remove("hidden");
-  tlNext();
-}
-function tlNext(){tlRender();if(TL&&!TL.over&&TL.turn!==0)tlT=setTimeout(botTurn,900+Math.random()*500);}
-function botTurn(){if(!TL||TL.over)return;const i=TL.turn,mv=botMove(TL.hands[i],TL.last);if(mv)tlPlay(i,mv);else tlPass(i);}
-function tlPlay(i,cs){
-  const ids=new Set(cs);TL.hands[i]=TL.hands[i].filter(c=>!ids.has(c));
-  TL.last={cs:cs.slice().sort((a,b)=>cv(a)-cv(b)),c:cls(cs),by:i};
-  beep(392,.1,"sine",.05);
-  if(!TL.hands[i].length)return tlEnd(i);
-  tlAdvance();
-}
-function tlPass(i){TL.passed[i]=true;tlAdvance();}
-function tlAdvance(){
-  let nx=TL.turn;
-  for(let k=0;k<TL.n;k++){
-    nx=(nx+1)%TL.n;
-    if(TL.last&&nx===TL.last.by){TL.last=null;TL.passed.fill(false);TL.turn=nx;return tlNext();}
-    if(!TL.passed[nx]){TL.turn=nx;return tlNext();}
-  }
-}
-function tlRender(){
-  const T=TL;if(!T)return;const my=T.turn===0&&!T.over;
-  $("#t-opps").innerHTML=T.names.map((nm,i)=>i===0?"":'<div class="opp'+(T.turn===i&&!T.over?" on":"")+(T.passed[i]?" ps":"")+'"><b>'+esc(nm)+"</b><span>🂠 "+T.hands[i].length+"</span><em>"+(T.passed[i]?"bỏ lượt":(T.turn===i&&!T.over?"đang nghĩ…":""))+"</em></div>").join("");
-  $("#t-table").innerHTML=T.last?"<span>"+esc(T.names[T.last.by])+' đánh</span><div class="cs">'+T.last.cs.map(c=>cardEl(c," mini")).join("")+"</div>":"<span>Vòng mới: "+esc(T.names[T.turn])+" đi đầu</span>";
-  $("#t-msg").textContent=T.over?"":(my?(T.last?"Đến lượt bạn: chặt hoặc bỏ lượt":"Bạn đi đầu: chọn bài rồi bấm Đánh"):"Đang chờ "+T.names[T.turn]+"…");
-  $("#t-hand").innerHTML=T.hands[0].map((c,i)=>cardEl(c,tlSel.has(c)?" sel":"").replace("<div",'<div data-i="'+i+'"')).join("");
-  $("#t-hand").querySelectorAll(".pc").forEach(el=>{el.onclick=()=>{if(!my)return;const c=T.hands[0][+el.dataset.i];tlSel.has(c)?tlSel.delete(c):tlSel.add(c);beep(494,.06,"sine",.03);tlRender();};});
-  ["#t-play","#t-pass","#t-clear"].forEach(s=>{$(s).disabled=!my;});
-}
-$("#t-play").onclick=()=>{
-  if(!TL||TL.over||TL.turn!==0)return;
-  const cs=TL.hands[0].filter(c=>tlSel.has(c));
-  if(!cs.length)return toast("Chọn bài trước đã nhé.");
-  const c=cls(cs);if(!c)return toast("Bộ bài không hợp lệ.");
-  if(TL.last&&!beats(TL.last.c,c))return toast("Bài chưa đủ lớn để chặt.");
-  tlSel.clear();tlPlay(0,cs);
-};
-$("#t-pass").onclick=()=>{if(!TL||TL.over||TL.turn!==0)return;if(!TL.last)return toast("Bạn đang đi đầu, hãy đánh một bộ.");tlSel.clear();tlPass(0);};
-$("#t-clear").onclick=()=>{tlSel.clear();tlRender();};
-function tlEnd(w){
-  TL.over=true;tlRender();
-  const rows=TL.names.map((nm,i)=>({nm,l:TL.hands[i].length})).sort((a,b)=>a.l-b.l);
-  $("#t-title").textContent=w===0?"Bạn thắng! 🎉":TL.names[w]+" thắng";
-  $("#t-rank").innerHTML=rows.map((r,k)=>'<div class="row2">'+(k+1)+". "+esc(r.nm)+(r.l?" — còn "+r.l+" lá":" — hết bài")+"</div>").join("");
-  $("#t-game").classList.add("hidden");$("#t-end").classList.remove("hidden");
-  if(w===0)[523,659,784].forEach((f,i)=>beep(f,.2,"sine",.05,i*.14));
-}
-document.querySelectorAll("[data-tl]").forEach(b=>{b.onclick=()=>{audio();tlStart(+b.dataset.tl);};});
-$("#t-again").onclick=()=>tlStart(TL.n);
-$("#t-change").onclick=()=>{$("#t-end").classList.add("hidden");$("#t-setup").classList.remove("hidden");};
-$("#t-back").onclick=()=>{clearTimeout(tlT);TL=null;show("menu");};
-$("#m-tl").onclick=()=>{audio();clearTimeout(tlT);TL=null;$("#t-setup").classList.remove("hidden");$("#t-game").classList.add("hidden");$("#t-end").classList.add("hidden");show("tl");};
 
 try{const u=JSON.parse(store("user")||"null");if(u&&u.name)setUser(u);else show("auth");}catch(e){show("auth");}
 })();
