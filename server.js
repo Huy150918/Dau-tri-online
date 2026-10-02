@@ -13,7 +13,7 @@ const BOTS = {
   medium: { n: "Anh HyM (Vừa)", acc: 0.7, base: 2200, jit: 900 },
   hard:   { n: "Anh HyM (Khó)", acc: 0.9, base: 1100, jit: 500 }
 };
-const INTRO_MS = 2300, RESULT_MS = 3300, GRACE_MS = 900;
+const INTRO_MS = 1200, RESULT_MS = 1800, GRACE_MS = 900; // chờ giữa 2 câu = RESULT_MS + INTRO_MS = 3s
 
 const server = http.createServer((req, res) => {
   const url = (req.url || "/").split("?")[0];
@@ -83,7 +83,10 @@ function onAnswer(room, p, idx, ms) {
   const q = room.qs[room.qi];
   const ok = idx === q.ci;
   const max = BASE * (q.final ? 2 : 1);
-  const pts = ok ? Math.round(max * (1 - t / MAXT)) : 0;
+  // Điểm theo bậc từng giây: giây 1 = 100%, giây 2 = 90%, ... giây 5 (giây cuối) = 60%
+  // Câu thường: 200 / 180 / 160 / 140 / 120. Câu cuối (x2): 400 / 360 / 320 / 280 / 240.
+  const step = Math.min(4, Math.floor(t / 1000));
+  const pts = ok ? Math.round(max * (1 - 0.1 * step)) : 0;
   room.ans[p] = { idx, ok, pts, t };
   send(room.players[1 - p], { t: "opp" });
   if (room.ans[0] && room.ans[1]) endRound(room);
