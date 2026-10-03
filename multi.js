@@ -236,4 +236,9 @@ function handle(ws, m) {
     case "hb:ans": if (room && room.game === "hb" && i >= 0) hbAns(room, i, m.text); return;
   }
 }
-module.exports = { handle, leave };
+function stats() {
+  const g = { tl: { rooms: 0, players: 0 }, hb: { rooms: 0, players: 0 }, cr: { rooms: 0, players: 0 } };
+  rooms.forEach(r => { const x = g[r.game]; if (x) { x.rooms++; x.players += r.players.length; } });
+  return g;
+}
+module.exports = { handle, leave, stats };
