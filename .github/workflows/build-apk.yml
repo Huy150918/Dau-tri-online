@@ -25,8 +25,10 @@ jobs:
           npm install @capacitor/core@6 @capacitor/cli@6 @capacitor/android@6
           mkdir www
           echo '<!DOCTYPE html><html><body>Dang tai...</body></html>' > www/index.html
-          node -e 'require("fs").writeFileSync("capacitor.config.json", JSON.stringify({appId:"vn.dautri.online",appName:"Dau Tri 1v1",webDir:"www",server:{url:process.env.SERVER_URL,cleartext:false}}))'
+          node -e 'require("fs").writeFileSync("capacitor.config.json", JSON.stringify({appId:"vn.dautri.online",appName:"Var Nhau",webDir:"www",server:{url:process.env.SERVER_URL,cleartext:false}}))'
           npx cap add android
+          sed -i 's#<application#<uses-permission android:name="android.permission.RECORD_AUDIO" />\n    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />\n    <application#' android/app/src/main/AndroidManifest.xml
+          grep -c "RECORD_AUDIO" android/app/src/main/AndroidManifest.xml
           npx cap sync android
           cd android
           chmod +x gradlew
