@@ -16,9 +16,56 @@ const BOTS = {
 };
 const INTRO_MS = 2000, RESULT_MS = 3000, GRACE_MS = 900; // chờ giữa 2 câu = RESULT_MS + INTRO_MS = 5s
 
+// Thống kê người chơi (chỉ đếm từ lúc máy chủ khởi động, không lưu lại khi khởi động lại)
+const startedAt = Date.now();
+let appOpens = 0, totalConns = 0, peakOnline = 0;
+function statsData() {
+  let vnRooms = 0, vnPlayers = 0, vnBot = 0;
+  rooms.forEach(r => {
+    if (r.bot) { vnBot++; vnPlayers++; } else { vnRooms++; vnPlayers += r.players.filter(Boolean).length; }
+  });
+  const g = multi.stats();
+  return {
+    online: wss.clients.size,
+    dangChoi: vnPlayers + g.tl.players + g.hb.players + g.cr.players,
+    games: {
+      varNhau: { phong: vnRooms, nguoi: vnPlayers - vnBot, voiMay: vnBot },
+      tienLen: { phong: g.tl.rooms, nguoi: g.tl.players },
+      duoiHinhBatChu: { phong: g.hb.rooms, nguoi: g.hb.players },
+      caro: { phong: g.cr.rooms, nguoi: g.cr.players }
+    },
+    luotMoApp: appOpens,
+    luotKetNoi: totalConns,
+    dinhOnline: peakOnline,
+    chayTu: new Date(startedAt).toISOString()
+  };
+}
+const STATS_PAGE = `<!DOCTYPE html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Thống kê Var Nhau</title>
+<style>body{margin:0;padding:20px;font:16px system-ui,sans-serif;background:#0e0b24;color:#f2efff}h1{font-size:22px;margin:0 0 14px}.g{display:grid;grid-template-columns:1fr 1fr;gap:10px}.c{background:#1b1642;border-radius:14px;padding:14px}.c b{display:block;font-size:34px;line-height:1.1}.c span{color:#a49fd0;font-size:13px}.w{grid-column:1/-1}small{color:#a49fd0;display:block;margin-top:14px;line-height:1.5}</style></head><body>
+<h1>Thống kê Var Nhau</h1><div class="g" id="g">Đang tải…</div><small id="n"></small>
+<script>
+async function load(){try{const r=await fetch('/stats.json'+location.search,{cache:'no-store'});if(!r.ok)throw 0;const d=await r.json();
+const c=(n,l,w)=>'<div class="c'+(w?' w':'')+'"><b>'+n+'</b><span>'+l+'</span></div>';
+document.getElementById('g').innerHTML=c(d.dangChoi,'người đang trong phòng chơi',1)+c(d.online,'kết nối đang mở')+c(d.dinhOnline,'đỉnh online')+
+c(d.games.varNhau.nguoi+' ('+d.games.varNhau.phong+' phòng)','Var Nhau online')+c(d.games.varNhau.voiMay,'Var Nhau với máy')+
+c(d.games.tienLen.nguoi+' ('+d.games.tienLen.phong+' phòng)','Tiến lên')+c(d.games.duoiHinhBatChu.nguoi+' ('+d.games.duoiHinhBatChu.phong+' phòng)','Đuổi hình bắt chữ')+
+c(d.games.caro.nguoi+' ('+d.games.caro.phong+' phòng)','Cờ ca rô')+c(d.luotMoApp,'lượt mở app');
+document.getElementById('n').textContent='Máy chủ chạy từ '+new Date(d.chayTu).toLocaleString('vi-VN')+'. Số liệu về 0 khi máy chủ khởi động lại. Chơi offline không được tính. Tự cập nhật mỗi 5 giây.';
+}catch(e){document.getElementById('g').textContent='Không xem được (sai khoá?).';}}
+load();setInterval(load,5000);
+</script></body></html>`;
+
 const server = http.createServer((req, res) => {
   const url = (req.url || "/").split("?")[0];
   if (url === "/healthz") { res.writeHead(200); return res.end("ok"); }
+  if (url === "/stats" || url === "/stats.json") {
+    let key = ""; try { key = new URL(req.url, "http://x").searchParams.get("key") || ""; } catch (e) {}
+    if (process.env.STATS_KEY && key !== process.env.STATS_KEY) { res.writeHead(404); return res.end("Not found"); }
+    const json = url === "/stats.json";
+    res.writeHead(200, { "Content-Type": json ? "application/json; charset=utf-8" : "text/html; charset=utf-8", "Cache-Control": "no-store" });
+    return res.end(json ? JSON.stringify(statsData()) : STATS_PAGE);
+  }
+  if (url === "/" || url === "/index.html") appOpens++;
   if (url !== "/" && url !== "/index.html") { res.writeHead(404); return res.end("Not found"); }
   fs.readFile(INDEX, (err, buf) => {
     if (err) { res.writeHead(500); return res.end("Missing index.html"); }
@@ -141,6 +188,7 @@ function chatRelay(ws, m) {
 }
 
 wss.on("connection", ws => {
+  totalConns++; peakOnline = Math.max(peakOnline, wss.clients.size);
   ws.alive = true; ws.room = null;
   ws.on("pong", () => { ws.alive = true; });
   ws.on("message", raw => {
