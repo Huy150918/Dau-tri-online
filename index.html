@@ -123,6 +123,46 @@ body.final .bar{outline:2px solid var(--gold);outline-offset:2px}
 .opp.on{border-color:var(--op)}.opp.ps{opacity:.55}.opp em{font-style:normal;color:var(--muted);font-size:12px;min-height:16px}
 .tmsg{text-align:center;font-weight:600;font-size:14px;margin:6px 0;min-height:20px}
 .row2{padding:8px 0;border-top:1px solid var(--line);font-weight:600}
+.cb{display:grid;grid-template-columns:repeat(15,1fr);grid-template-rows:repeat(15,1fr);width:100%;aspect-ratio:1;background:var(--card);border:2px solid var(--line);border-radius:12px;overflow:hidden;margin:10px 0}
+.cc{display:grid;place-items:center;min-width:0;min-height:0;overflow:hidden;padding:0;margin:0;border:0;border-right:1px solid var(--line);border-bottom:1px solid var(--line);background:transparent;font:800 clamp(13px,4.2vw,24px)/1 "Baloo 2",sans-serif;color:var(--ink);touch-action:manipulation}
+.cc.x{color:var(--me)}.cc.o{color:var(--op)}
+.cc.last{background:color-mix(in srgb,var(--gold) 32%,transparent)}
+.cc.win{background:color-mix(in srgb,var(--ok) 40%,transparent)}
+.crhead{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.crp{display:flex;align-items:center;gap:6px;border:2px solid var(--line);background:var(--card);border-radius:14px;padding:8px 10px;font-weight:700;font-size:14px;min-width:0}
+.crp.on{border-color:var(--gold);box-shadow:0 0 0 3px color-mix(in srgb,var(--gold) 28%,transparent)}
+.crp .mk{font-family:"Baloo 2",sans-serif;font-weight:800;font-size:22px;line-height:1}
+.crp .mk.x{color:var(--me)}.crp .mk.o{color:var(--op)}
+.crp .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.crp .w{font-family:"Baloo 2",sans-serif;font-size:20px}
+.crst{text-align:center;font-weight:700;min-height:24px;margin-top:2px;color:var(--muted)}
+.crend{text-align:center;margin-top:6px}
+.crend .rt{margin:4px 0}
+#chat-fab{position:fixed;z-index:50;left:0;top:0;width:46px;height:46px;border-radius:50%;border:2px solid var(--line);background:var(--card);box-shadow:0 4px 14px rgba(0,0,0,.28);font-size:22px;line-height:1;display:grid;place-items:center;padding:0;touch-action:none;user-select:none;-webkit-user-select:none}
+#chat-fab i{position:absolute;top:-5px;right:-5px;min-width:19px;height:19px;border-radius:10px;background:var(--bad);color:#fff;font:700 11px/19px "Be Vietnam Pro",sans-serif;text-align:center;padding:0 4px;font-style:normal}
+#chat-tray{position:fixed;z-index:55;width:min(292px,calc(100vw - 16px));background:var(--card);border:2px solid var(--line);border-radius:16px;padding:8px;box-shadow:0 8px 24px rgba(0,0,0,.35);display:grid;grid-template-columns:repeat(6,1fr);gap:4px}
+#chat-tray button{border:0;background:transparent;font-size:26px;line-height:1;padding:6px 0;border-radius:10px}
+#chat-tray button:active,#chat-emo button:active{background:var(--line);transform:scale(.9)}
+#chat-tray .open{grid-column:1/-1;font:700 14px "Be Vietnam Pro",sans-serif;background:var(--op);color:#fff;padding:10px;margin-top:2px}
+#chat{position:fixed;z-index:58;left:0;right:0;bottom:0;height:min(58vh,440px);display:flex;flex-direction:column;background:var(--card);border-top:2px solid var(--line);border-radius:18px 18px 0 0;box-shadow:0 -8px 28px rgba(0,0,0,.35);padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px))}
+.chat-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.chat-h b{font-family:"Baloo 2",sans-serif;font-size:20px}
+.chat-h button{border:0;background:var(--line);width:32px;height:32px;border-radius:50%;font-weight:700}
+#chat-list{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;padding:2px 0}
+#chat-list:empty::before{content:"Chưa có tin nhắn. Gửi lời chào đi!";margin:auto;color:var(--muted);font-size:14px}
+.cm{align-self:flex-start;max-width:85%;margin:0 0 6px;padding:7px 11px;border-radius:14px;background:var(--bg);font-size:14px;line-height:1.35;overflow-wrap:anywhere}
+.cm b{display:block;font-size:11px;color:var(--muted)}
+.cm.mine{align-self:flex-end;background:var(--op);color:#fff}.cm.mine b{color:rgba(255,255,255,.8)}
+#chat-emo{display:flex;gap:2px;overflow-x:auto;padding:4px 0}
+#chat-emo button{flex:none;border:0;background:transparent;font-size:26px;line-height:1;padding:4px 7px;border-radius:10px}
+.chat-in{display:grid;grid-template-columns:1fr auto;gap:8px}
+.chat-in button{border:0;border-radius:12px;padding:0 18px;font-weight:700;color:#fff;background:var(--me)}
+#chat-peek{position:fixed;z-index:59;left:50%;transform:translateX(-50%);top:calc(8px + env(safe-area-inset-top,0px));max-width:min(86vw,420px);background:var(--ink);color:var(--bg);padding:9px 14px;border-radius:14px;font-size:14px;font-weight:600;box-shadow:0 6px 18px rgba(0,0,0,.35);overflow-wrap:anywhere}
+.fly{position:fixed;z-index:57;bottom:16%;pointer-events:none;text-align:center;font-size:46px;line-height:1;animation:fly 2.4s ease-out forwards}
+.fly small{display:block;font:600 11px "Be Vietnam Pro",sans-serif;background:rgba(0,0,0,.55);color:#fff;border-radius:8px;padding:1px 7px;margin:2px auto 0;width:max-content;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@keyframes fly{0%{transform:translateY(0) scale(.5);opacity:0}12%{opacity:1;transform:translateY(-20px) scale(1.25)}100%{transform:translateY(-52vh) scale(1);opacity:0}}
+@keyframes fadeo{0%,70%{opacity:1}100%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.fly{animation:fadeo 1.4s forwards}}
 </style>
 </head>
 <body>
@@ -152,6 +192,7 @@ body.final .bar{outline:2px solid var(--gold);outline-offset:2px}
     <button class="card" id="m-vn"><b>Trò Var Nhau</b><span>Đấu trí 1 vs 1 trực tuyến, trả lời càng nhanh điểm càng cao</span></button>
     <button class="card" id="m-hb"><b>Trò Đuổi Hình Bắt Chữ</b><span>Nhìn hình đoán chữ, chơi một mình hoặc 2 người</span></button>
     <button class="card" id="m-tl"><b>Tiến lên</b><span>Tạo phòng chơi cùng bạn bè, 2 – 4 người</span></button>
+    <button class="card" id="m-cr"><b>Cờ Ca Rô</b><span>Online 2 người qua mã phòng, hoặc đấu với máy</span></button>
     <button class="ghost" id="m-out" style="margin-top:6px">Đăng xuất</button>
   </div>
   <div class="foot">App này anh dành cho My ♥️</div>
@@ -228,6 +269,44 @@ body.final .bar{outline:2px solid var(--gold);outline-offset:2px}
   </div>
 </section>
 
+<section id="s-cr" class="screen hidden">
+  <div class="wrap" style="max-width:600px">
+    <button class="back" id="c-back">← Trở về</button>
+    <div id="c-setup">
+      <h2 class="rt">Cờ Ca Rô</h2>
+      <p class="sub">Bàn 15 × 15. Ai xếp được 5 quân liền nhau (ngang, dọc hoặc chéo) trước là thắng. Mỗi ván đổi người đi trước.</p>
+      <button class="btn" id="c-create">Tạo phòng online</button>
+      <div class="or">hoặc vào phòng có sẵn</div>
+      <div class="joinrow"><input id="c-codein" maxlength="4" placeholder="MÃ" autocomplete="off" autocapitalize="characters" aria-label="Mã phòng"><button class="ghost" id="c-join">Vào</button></div>
+      <div class="or">hoặc đấu với anh HyM (offline)</div>
+      <div class="bots"><button class="ghost" data-cr="easy">Dễ</button><button class="ghost" data-cr="medium">Vừa</button><button class="ghost" data-cr="hard">Khó</button></div>
+      <div class="err" id="c-err" role="alert"></div>
+    </div>
+    <div id="c-lobby" class="hidden" style="text-align:center">
+      <p class="sub">Mã phòng</p>
+      <div class="code" id="c-code"></div>
+      <p class="sub pulse" id="c-wait"></p>
+      <button class="ghost" id="c-share">Chia sẻ mã phòng</button>
+    </div>
+    <div id="c-play" class="hidden">
+      <div class="crhead">
+        <div class="crp" id="c-p0"><span class="mk"></span><span class="nm"></span><b class="w"></b></div>
+        <div class="crp" id="c-p1"><span class="mk"></span><span class="nm"></span><b class="w"></b></div>
+      </div>
+      <div class="cb" id="c-board"></div>
+      <div class="crst" id="c-st"></div>
+      <div class="crend hidden" id="c-end">
+        <h2 class="rt" id="c-title"></h2>
+        <p class="sub" id="c-sc"></p>
+        <button class="btn" id="c-again">Chơi lại</button>
+        <div style="height:10px"></div>
+        <button class="ghost" id="c-menu">Trở về</button>
+      </div>
+    </div>
+  </div>
+  <div class="foot">App này anh dành cho My ♥️</div>
+</section>
+
 <section id="s-home" class="screen hidden">
   <div class="wrap">
     <button class="back" id="b-menu">← Trở về</button>
@@ -302,6 +381,17 @@ body.final .bar{outline:2px solid var(--gold);outline-offset:2px}
   <div class="foot">App này anh dành cho My ♥️</div>
 </section>
 
+<button id="chat-fab" class="hidden" aria-label="Chat và thả icon">💬<i id="chat-badge" class="hidden"></i></button>
+<div id="chat-tray" class="hidden" role="group" aria-label="Thả icon"><button class="open" id="chat-open">💬 Nhắn tin</button></div>
+<div id="chat-peek" class="hidden" role="status"></div>
+<div id="chat" class="hidden" role="dialog" aria-label="Chat">
+  <div class="chat-h"><b>Chat</b><button id="chat-x" aria-label="Đóng chat">✕</button></div>
+  <div id="chat-list"></div>
+  <div id="chat-emo" aria-label="Thả icon"></div>
+  <div class="chat-in"><input id="chat-input" maxlength="120" placeholder="Nhắn gì đó…" autocomplete="off"><button id="chat-send">Gửi</button></div>
+</div>
+<div id="fly-layer"></div>
+
 <script>
 (function(){
 "use strict";
@@ -309,7 +399,7 @@ const $=s=>document.querySelector(s);
 const MAXT=5000, LET=["A","B","C","D"];
 let curErr="#err", ws=null, me=0, names=["",""], scores=[0,0], phase="home", t0=0, raf=0, locked=false, cur={n:1,final:false}, tm=[];
 
-function show(id){["auth","menu","home","hbbc","tl","lobby","game","end"].forEach(k=>$("#s-"+k).classList.toggle("hidden",k!==id));}
+function show(id){["auth","menu","home","hbbc","tl","cr","lobby","game","end"].forEach(k=>$("#s-"+k).classList.toggle("hidden",k!==id));}
 function toast(m){const t=document.createElement("div");t.className="toast";t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2600);}
 function later(fn,ms){tm.push(setTimeout(fn,ms));}
 function clearTm(){tm.forEach(clearTimeout);tm=[];cancelAnimationFrame(raf);}
@@ -361,11 +451,12 @@ $("#b-home").onclick=()=>{send({t:"leave"});goHome();};
 
 /* ---- Xử lý tin nhắn từ máy chủ ---- */
 function handle(d){
-  if(/^(m|tl|hb):/.test(d.t))return mpHandle(d);
+  if(d.t==="c:msg"||d.t==="c:emo"||d.t==="c:slow")return onChat(d);
+  if(/^(m|tl|hb|cr):/.test(d.t))return mpHandle(d);
   switch(d.t){
     case "err": $("#err").textContent=d.msg||"Có lỗi xảy ra."; break;
     case "room":
-      me=d.you;names=d.names;
+      me=d.you;names=d.names;vnCode=d.code;botRoom=!!d.bot;vnFull=!!d.full;
       if(phase==="home"){phase="lobby";if(!d.bot)show("lobby");}
       $("#l-code").textContent=d.code;
       $("#l-wait").textContent=d.full?"Đối thủ đã vào, sắp bắt đầu…":"Đang chờ người chơi thứ hai nhập mã này…";
@@ -543,7 +634,7 @@ function mpSend(errSel,msg){curErr=errSel;$(errSel).textContent="";connect(()=>s
 async function shareText(text,code){try{if(navigator.share){await navigator.share({text});return;}}catch(e){return;}try{await navigator.clipboard.writeText(text);toast("Đã sao chép lời mời");}catch(e){toast("Mã phòng: "+code);}}
 const view=(p,ids,id)=>ids.forEach(k=>$("#"+p+"-"+k).classList.toggle("hidden",k!==id));
 const tlView=id=>view("t",["setup","lobby","game","end"],id),hbView=id=>view("h",["setup","lobby","play","end"],id);
-function toMenu(){if(mp)send({t:"m:leave"});mp=null;TL=null;clearTimeout(hT);clearInterval(hCd);show("menu");}
+function toMenu(){crStop();if(mp)send({t:"m:leave"});mp=null;TL=null;clearTimeout(hT);clearInterval(hCd);show("menu");}
 function joinRoom(game,inp,err){audio();const c=$(inp).value.trim().toUpperCase();if(c.length!==4){$(err).textContent="Mã phòng gồm 4 chữ cái.";return;}mpSend(err,{t:"m:join",game,code:c,name:myName()});}
 $("#m-tl").onclick=()=>{audio();mp=null;TL=null;tlView("setup");$("#t-err").textContent="";show("tl");};
 $("#m-hb").onclick=()=>{audio();mp=null;clearTimeout(hT);clearInterval(hCd);hbView("setup");$("#h-err").textContent="";show("hbbc");};
@@ -570,15 +661,16 @@ function mpHandle(d){
     case "hb:hint":if(hbRound)$("#h-blanks").textContent=hbBl(hbRound.w,d.f);break;
     case "hb:res":onHbRes(d);break;
     case "hb:end":onHbEnd(d);break;
+    case "cr:state":onCrState(d);break;
   }
 }
 function onMRoom(d){
   mp={game:d.game,code:d.code,you:d.you,names:d.names,max:d.max};
-  const p=d.game==="tl"?"t":"h";
+  const p={tl:"t",hb:"h",cr:"c"}[d.game];
   $("#"+p+"-code").textContent=d.code;
   $("#"+p+"-wait").textContent=d.full?"Đủ người rồi, sắp bắt đầu…":"Đã có "+d.names.length+"/"+d.max+" người. Đang chờ thêm người nhập mã này…";
   $("#"+p+"-wait").classList.toggle("pulse",!d.full);
-  if(d.game==="tl"){tlView("lobby");show("tl");}else{hbView("lobby");show("hbbc");}
+  if(d.game==="tl"){tlView("lobby");show("tl");}else if(d.game==="cr"){crView("lobby");show("cr");}else{hbView("lobby");show("hbbc");}
 }
 
 /* ---- Tiến lên ---- (lá bài là số 0..51: hạng*4+chất) */
@@ -709,6 +801,201 @@ function onHbEnd(d){
   $("#h-title").textContent=a>b?"Bạn thắng! 🎉":a<b?esc(mp.names[1-mp.you])+" thắng":"Hòa nhau!";
   $("#h-final").textContent=a+" – "+b;hbView("end");
   if(a>=b)[392,494,587].forEach((f,i)=>beep(f,.2,"sine",.05,i*.14));
+}
+
+/* ---- Cờ Ca Rô ---- */
+/*CR-ENGINE-START*/
+const CN=15,CD4=[[0,1],[1,0],[1,1],[1,-1]];
+const crIn=(r,c)=>r>=0&&c>=0&&r<CN&&c<CN;
+function crWinLine(b,r,c,v){
+  for(const [dr,dc] of CD4){
+    const line=[[r,c]];
+    for(const s of [1,-1]){let rr=r+dr*s,cc=c+dc*s;while(crIn(rr,cc)&&b[rr*CN+cc]===v){line.push([rr,cc]);rr+=dr*s;cc+=dc*s;}}
+    if(line.length>=5)return line;
+  }
+  return null;
+}
+function crPat(b,r,c,p){
+  let s=0;
+  for(const [dr,dc] of CD4){
+    let n=1,open=0;
+    for(const g of [1,-1]){let rr=r+dr*g,cc=c+dc*g;while(crIn(rr,cc)&&b[rr*CN+cc]===p){n++;rr+=dr*g;cc+=dc*g;}if(crIn(rr,cc)&&b[rr*CN+cc]===0)open++;}
+    if(n>=5)s+=1e6;else if(open>0)s+=({4:[0,1e3,1e4],3:[0,100,1e3],2:[0,10,100],1:[0,1,10]})[n][open];
+  }
+  return s;
+}
+function crAiPick(b,me,level){
+  const op=3-me,cfg=({easy:{atk:1,def:.5,noise:.7,miss:.4,top:5},medium:{atk:1,def:.95,noise:.15,miss:0,top:2},hard:{atk:1.1,def:1.1,noise:.02,miss:0,top:1}})[level]||{atk:1,def:.95,noise:.15,miss:0,top:2};
+  let any=false;const cand=[];
+  for(let r=0;r<CN;r++)for(let c=0;c<CN;c++){
+    if(b[r*CN+c]){any=true;continue;}
+    let near=false;
+    for(let dr=-2;dr<=2&&!near;dr++)for(let dc=-2;dc<=2;dc++){const rr=r+dr,cc=c+dc;if(crIn(rr,cc)&&b[rr*CN+cc]){near=true;break;}}
+    if(near)cand.push([r,c]);
+  }
+  if(!any){const m=CN>>1;return [m+Math.floor(Math.random()*3)-1,m+Math.floor(Math.random()*3)-1];}
+  if(!cand.length){for(let r=0;r<CN;r++)for(let c=0;c<CN;c++)if(!b[r*CN+c])return [r,c];return null;}
+  const sc=cand.map(([r,c])=>({r,c,a:crPat(b,r,c,me),d:crPat(b,r,c,op)}));
+  const win=sc.find(x=>x.a>=1e6);if(win)return [win.r,win.c];
+  if(Math.random()>=cfg.miss){const blk=sc.find(x=>x.d>=1e6);if(blk)return [blk.r,blk.c];}
+  sc.forEach(x=>{const mid=(7-Math.abs(x.r-7))+(7-Math.abs(x.c-7));const base=x.a*cfg.atk+x.d*cfg.def+mid*.5;x.s=base*(1+(Math.random()*2-1)*cfg.noise);});
+  sc.sort((x,y)=>y.s-x.s);
+  const pick=sc[Math.floor(Math.random()*Math.min(cfg.top,sc.length))];
+  return [pick.r,pick.c];
+}
+/*CR-ENGINE-END*/
+
+let CR=null,crT=0,crAI=null;
+const CRN={easy:"Dễ",medium:"Vừa",hard:"Khó"};
+const crView=id=>view("c",["setup","lobby","play"],id);
+function crStop(){clearTimeout(crT);crT=0;crAI=null;CR=null;}
+function crBuild(){
+  const bd=$("#c-board");if(bd.children.length)return;
+  for(let k=0;k<CN*CN;k++){const b=document.createElement("button");b.type="button";b.className="cc";b.dataset.k=k;b.setAttribute("aria-label","Hàng "+(Math.floor(k/CN)+1)+", cột "+(k%CN+1));bd.appendChild(b);}
+  bd.addEventListener("click",e=>{const b=e.target.closest(".cc");if(b)crClick(+b.dataset.k);});
+}
+function crRender(){
+  const S=CR;if(!S)return;crBuild();
+  const cells=$("#c-board").children,ls=new Set((S.line||[]).map(p=>p[0]*CN+p[1])),li=S.last?S.last[0]*CN+S.last[1]:-1;
+  for(let k=0;k<cells.length;k++){const v=S.board[k],el=cells[k],t=v===1?"X":v===2?"O":"";if(el.textContent!==t)el.textContent=t;el.className="cc"+(v===1?" x":v===2?" o":"")+(k===li?" last":"")+(ls.has(k)?" win":"");}
+  const me=S.you,op=1-me;
+  [[0,me],[1,op]].forEach(([slot,pl])=>{
+    const el=$("#c-p"+slot);el.classList.toggle("on",!S.over&&S.turn===pl);
+    const mk=el.querySelector(".mk");mk.textContent=pl===0?"X":"O";mk.className="mk "+(pl===0?"x":"o");
+    el.querySelector(".nm").textContent=(slot===0?"Bạn · ":"")+esc(S.names[pl]);
+    el.querySelector(".w").textContent=S.wins[pl];
+  });
+  const st=$("#c-st"),en=$("#c-end");
+  if(S.over){
+    st.textContent="";en.classList.remove("hidden");
+    $("#c-title").textContent=S.winner===me?"Bạn thắng! 🎉":S.winner===-1?"Hòa nhau!":esc(S.names[op])+" thắng";
+    $("#c-title").style.color=S.winner===me?"var(--ok)":S.winner===-1?"var(--gold)":"var(--op)";
+    $("#c-sc").textContent="Tỉ số: "+S.wins[me]+" – "+S.wins[op];
+  }else{
+    en.classList.add("hidden");
+    st.textContent=S.turn===me?"Đến lượt bạn":"Đợi "+esc(S.names[op])+"…";
+    $("#c-again").disabled=false;$("#c-again").textContent="Chơi lại";
+  }
+}
+function onCrState(d){
+  const prev=CR&&CR.online?CR.board.filter(Boolean).length:-1;
+  CR={online:true,you:d.you,names:d.names,board:d.board.split("").map(Number),turn:d.turn,last:d.last,over:d.over,winner:d.winner,line:d.line,wins:d.wins};
+  crView("play");show("cr");crRender();
+  const n=CR.board.filter(Boolean).length;
+  if(n>prev&&n>0)beep(CR.turn===CR.you||CR.over?520:660,.06,"sine",.04);
+  if(CR.over&&CR.winner===CR.you)[392,494,587].forEach((f,i)=>beep(f,.2,"sine",.05,i*.14));
+}
+function crLocal(p,r,c){
+  const S=CR;S.board[r*CN+c]=p+1;S.last=[r,c];beep(p===0?560:480,.06,"sine",.04);
+  const line=crWinLine(S.board,r,c,p+1);
+  if(line){S.over=true;S.winner=p;S.line=line;S.wins[p]++;if(p===S.you)[392,494,587].forEach((f,i)=>beep(f,.2,"sine",.05,i*.14));}
+  else if(S.board.every(Boolean)){S.over=true;S.winner=-1;}
+  else S.turn=1-p;
+  crRender();
+}
+function crClick(k){
+  const S=CR;if(!S||S.over||S.turn!==S.you||S.board[k])return;
+  const r=Math.floor(k/CN),c=k%CN;
+  if(S.online){send({t:"cr:move",r,c});return;}
+  crLocal(S.you,r,c);
+  if(!CR.over)crT=setTimeout(crAiTurn,350+Math.random()*450);
+}
+function crAiTurn(){
+  if(!CR||CR.online||CR.over||!crAI)return;
+  const m=crAiPick(CR.board,2,crAI.level);if(m)crLocal(1,m[0],m[1]);
+}
+function crNewLocal(){
+  crAI.first=crAI.first===null?0:1-crAI.first;
+  CR={online:false,you:0,names:[myName()||"Bạn","Anh HyM ("+CRN[crAI.level]+")"],board:Array(CN*CN).fill(0),turn:crAI.first,last:null,over:false,winner:null,line:null,wins:CR?CR.wins:[0,0]};
+  crRender();
+  if(crAI.first===1)crT=setTimeout(crAiTurn,500);
+}
+$("#m-cr").onclick=()=>{audio();mp=null;crStop();crView("setup");$("#c-err").textContent="";show("cr");};
+$("#c-back").onclick=$("#c-menu").onclick=toMenu;
+$("#c-create").onclick=()=>{audio();crStop();mpSend("#c-err",{t:"m:create",game:"cr",name:myName()});};
+$("#c-join").onclick=()=>{crStop();joinRoom("cr","#c-codein","#c-err");};
+$("#c-codein").addEventListener("keydown",e=>{if(e.key==="Enter")$("#c-join").click();});
+$("#c-share").onclick=()=>{if(mp)shareText("Vào chơi Cờ Ca Rô với mình! Mã phòng: "+mp.code+"\n"+location.origin,mp.code);};
+document.querySelectorAll("[data-cr]").forEach(b=>{b.onclick=()=>{audio();mp=null;crStop();crAI={level:b.dataset.cr,first:null};crNewLocal();crView("play");show("cr");};});
+$("#c-again").onclick=()=>{
+  if(CR&&CR.online){send({t:"m:again"});$("#c-again").disabled=true;$("#c-again").textContent="Chờ đối thủ…";}
+  else if(crAI){const w=CR.wins;clearTimeout(crT);crNewLocal();CR.wins=w;crRender();}
+};
+
+/* ---- Chat và thả icon (chỉ khi đang ở phòng online có người thật) ---- */
+const EMOS=["😂","😍","😎","😡","😭","😱","🤔","👍","👎","👏","🔥","❤️"];
+let vnCode="",botRoom=false,vnFull=false,chat={key:"",unread:0},fabPos={x:0,y:0},peekT=0,fdrag=null;
+const fab=$("#chat-fab"),tray=$("#chat-tray"),sheet=$("#chat"),clist=$("#chat-list"),cinp=$("#chat-input"),cpeek=$("#chat-peek");
+function chatKey(){
+  if(!ws||ws.readyState!==1)return "";
+  if(mp)return mp.names.length>=2?"m"+mp.game+mp.code:"";
+  if(phase!=="home"&&!botRoom&&vnCode&&vnFull)return "v"+vnCode;
+  return "";
+}
+function chatRefresh(){
+  const k=chatKey();
+  if(k!==chat.key){
+    chat={key:k,unread:0};clist.innerHTML="";
+    if(!k){tray.classList.add("hidden");sheet.classList.add("hidden");cpeek.classList.add("hidden");}
+  }
+  fab.classList.toggle("hidden",!k);
+  const b=$("#chat-badge");b.textContent=chat.unread>9?"9+":String(chat.unread);b.classList.toggle("hidden",!chat.unread);
+}
+setInterval(chatRefresh,400);
+function fabPlace(x,y){
+  x=Math.max(4,Math.min(innerWidth-50,x));y=Math.max(4,Math.min(innerHeight-50,y));
+  fab.style.left=x+"px";fab.style.top=y+"px";fabPos={x,y};
+}
+(function(){let p=null;try{p=JSON.parse(store("chatpos")||"null");}catch(e){}
+  fabPlace(p&&isFinite(p.x)?p.x:innerWidth-54,p&&isFinite(p.y)?p.y:Math.round(innerHeight*.3));})();
+addEventListener("resize",()=>fabPlace(fabPos.x,fabPos.y));
+function showTray(){
+  tray.classList.remove("hidden");
+  const r=fab.getBoundingClientRect(),tw=tray.offsetWidth,th=tray.offsetHeight;
+  tray.style.left=Math.max(8,Math.min(innerWidth-tw-8,r.right-tw))+"px";
+  tray.style.top=(r.top-th-8>=8?r.top-th-8:r.bottom+8)+"px";
+}
+function openChat(){tray.classList.add("hidden");cpeek.classList.add("hidden");sheet.classList.remove("hidden");chat.unread=0;chatRefresh();clist.scrollTop=clist.scrollHeight;try{cinp.focus();}catch(e){}}
+function closeChat(){sheet.classList.add("hidden");}
+function toggleTray(){
+  if(!sheet.classList.contains("hidden")){closeChat();return;}
+  if(!tray.classList.contains("hidden")){tray.classList.add("hidden");return;}
+  if(chat.unread>0)openChat();else showTray();
+}
+fab.addEventListener("pointerdown",e=>{fdrag={sx:e.clientX,sy:e.clientY,ox:fabPos.x,oy:fabPos.y,moved:false};try{fab.setPointerCapture(e.pointerId);}catch(_){}});
+fab.addEventListener("pointermove",e=>{
+  if(!fdrag)return;const dx=e.clientX-fdrag.sx,dy=e.clientY-fdrag.sy;
+  if(!fdrag.moved&&Math.hypot(dx,dy)>8)fdrag.moved=true;
+  if(fdrag.moved){fabPlace(fdrag.ox+dx,fdrag.oy+dy);tray.classList.add("hidden");}
+});
+fab.addEventListener("pointerup",()=>{if(!fdrag)return;const mv=fdrag.moved;fdrag=null;if(mv)store("chatpos",JSON.stringify(fabPos));else toggleTray();});
+fab.addEventListener("pointercancel",()=>{fdrag=null;});
+fab.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();toggleTray();}});
+[tray,$("#chat-emo")].forEach(c=>EMOS.forEach(em=>{
+  const b=document.createElement("button");b.type="button";b.textContent=em;b.setAttribute("aria-label","Thả "+em);
+  b.onclick=()=>send({t:"c:emo",e:em});c.insertBefore(b,c.querySelector(".open"));
+}));
+$("#chat-open").onclick=openChat;$("#chat-x").onclick=closeChat;cpeek.onclick=openChat;
+function chatSend(){const t=cinp.value.replace(/\s+/g," ").trim();if(!t)return;send({t:"c:msg",text:t.slice(0,120)});cinp.value="";}
+$("#chat-send").onclick=chatSend;
+cinp.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();chatSend();}});
+function chatFly(e,name){
+  const layer=$("#fly-layer");if(layer.children.length>24)return;
+  const el=document.createElement("div");el.className="fly";el.style.left=(8+Math.random()*72)+"vw";
+  el.append(e);const s=document.createElement("small");s.textContent=name;el.appendChild(s);
+  layer.appendChild(el);setTimeout(()=>el.remove(),2600);
+}
+function chatPeek(t){cpeek.textContent=t;cpeek.classList.remove("hidden");clearTimeout(peekT);peekT=setTimeout(()=>cpeek.classList.add("hidden"),3200);}
+function onChat(d){
+  if(!chat.key)return;
+  if(d.t==="c:slow"){toast("Gửi chậm lại một chút nhé");return;}
+  if(d.t==="c:emo"){chatFly(d.e,d.mine?"Bạn":d.name);return;}
+  const el=document.createElement("div");el.className="cm"+(d.mine?" mine":"");
+  const n=document.createElement("b");n.textContent=d.mine?"Bạn":d.name;
+  const t=document.createElement("span");t.textContent=d.text;el.append(n,t);clist.appendChild(el);
+  while(clist.children.length>60)clist.removeChild(clist.firstChild);
+  clist.scrollTop=clist.scrollHeight;
+  if(sheet.classList.contains("hidden")&&!d.mine){chat.unread++;chatPeek(d.name+": "+d.text);beep(740,.08,"sine",.04);chatRefresh();}
 }
 
 try{const u=JSON.parse(store("user")||"null");if(u&&u.name)setUser(u);else show("auth");}catch(e){show("auth");}
