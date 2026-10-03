@@ -25,8 +25,8 @@ function roomInfo(room) {
 /* ---------- Phòng chung ---------- */
 function create(ws, m) {
   leave(ws);
-  const game = m.game === "hb" ? "hb" : "tl";
-  const max = game === "hb" ? 2 : Math.min(4, Math.max(2, parseInt(m.n, 10) || 2));
+  const game = m.game === "hb" ? "hb" : m.game === "cr" ? "cr" : "tl";
+  const max = game === "tl" ? Math.min(4, Math.max(2, parseInt(m.n, 10) || 2)) : 2;
   const code = newCode(); if (!code) return err(ws, "Máy chủ đang đầy, thử lại sau.");
   const room = { code, game, max, players: [ws], names: [cleanName(m.name, "Người chơi 1")], phase: "lobby", timers: [], again: [] };
   rooms.set(code, room); ws.mroom = room; roomInfo(room);
@@ -44,7 +44,7 @@ function join(ws, m) {
   roomInfo(room);
   if (room.players.length === room.max) later(room, () => start(room), 900);
 }
-function start(room) { if (room.game === "tl") tlStart(room); else hbStart(room); }
+function start(room) { if (room.game === "tl") tlStart(room); else if (room.game === "cr") crStart(room); else hbStart(room); }
 function leave(ws) {
   const room = ws.mroom; if (!room) return;
   ws.mroom = null;
@@ -181,6 +181,47 @@ function hbRes(room, w) {
   }, RES_MS);
 }
 
+
+/* ---------- Cờ Ca Rô (15x15, 5 quân liền nhau thắng) ----------
+   board: mảng 225 ô, 0 = trống, 1 = X (người 0), 2 = O (người 1). Người đi trước đổi luân phiên mỗi ván. */
+const CR_N = 15;
+function crWin(b, r, c, v) {
+  for (const [dr, dc] of [[0, 1], [1, 0], [1, 1], [1, -1]]) {
+    const line = [[r, c]];
+    for (const s of [1, -1]) {
+      let rr = r + dr * s, cc = c + dc * s;
+      while (rr >= 0 && rr < CR_N && cc >= 0 && cc < CR_N && b[rr * CR_N + cc] === v) { line.push([rr, cc]); rr += dr * s; cc += dc * s; }
+    }
+    if (line.length >= 5) return line;
+  }
+  return null;
+}
+function crStart(room) {
+  clearTimers(room);
+  room.board = Array(CR_N * CR_N).fill(0);
+  room.wins = room.wins || [0, 0];
+  room.first = room.first === undefined ? 0 : 1 - room.first;
+  room.turn = room.first; room.last = null; room.moves = 0;
+  room.again = [false, false]; room.phase = "play";
+  crBroadcast(room, null);
+}
+function crBroadcast(room, over) {
+  room.players.forEach((p, i) => send(p, {
+    t: "cr:state", you: i, names: room.names, board: room.board.join(""), turn: room.turn, last: room.last,
+    over: !!over, winner: over ? over.winner : null, line: over ? over.line : null, wins: room.wins
+  }));
+}
+function crMove(room, i, r, c) {
+  if (room.phase !== "play" || room.turn !== i) return;
+  if (!Number.isInteger(r) || !Number.isInteger(c) || r < 0 || c < 0 || r >= CR_N || c >= CR_N) return;
+  const k = r * CR_N + c; if (room.board[k]) return;
+  room.board[k] = i + 1; room.last = [r, c]; room.moves++;
+  const line = crWin(room.board, r, c, i + 1);
+  if (line) { room.phase = "ended"; room.wins[i]++; crBroadcast(room, { winner: i, line }); return; }
+  if (room.moves >= CR_N * CR_N) { room.phase = "ended"; crBroadcast(room, { winner: -1, line: null }); return; }
+  room.turn = 1 - i; crBroadcast(room, null);
+}
+
 /* ---------- Điều phối ---------- */
 function handle(ws, m) {
   const room = ws.mroom, i = room ? room.players.indexOf(ws) : -1;
@@ -191,6 +232,7 @@ function handle(ws, m) {
     case "m:again": return again(ws);
     case "tl:play": if (room && room.game === "tl" && i >= 0) tlPlay(room, i, m.ids); return;
     case "tl:pass": if (room && room.game === "tl" && i >= 0) tlPass(room, i); return;
+    case "cr:move": if (room && room.game === "cr" && i >= 0) crMove(room, i, m.r, m.c); return;
     case "hb:ans": if (room && room.game === "hb" && i >= 0) hbAns(room, i, m.text); return;
   }
 }
