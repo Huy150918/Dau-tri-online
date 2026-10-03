@@ -4,7 +4,10 @@ const fs = require("fs");
 const path = require("path");
 const { WebSocketServer } = require("ws");
 const { buildQuestions } = require("./questions");
+const zlib = require("zlib");
 const multi = require("./multi");
+const accounts = require("./accounts");
+const voice = require("./voice");
 
 const PORT = process.env.PORT || 3000;
 const INDEX = path.join(__dirname, "index.html");
@@ -37,6 +40,7 @@ function statsData() {
     luotMoApp: appOpens,
     luotKetNoi: totalConns,
     dinhOnline: peakOnline,
+    taiKhoan: accounts.stats(),
     chayTu: new Date(startedAt).toISOString()
   };
 }
@@ -58,6 +62,8 @@ load();setInterval(load,5000);
 const server = http.createServer((req, res) => {
   const url = (req.url || "/").split("?")[0];
   if (url === "/healthz") { res.writeHead(200); return res.end("ok"); }
+  if (url.startsWith("/api/")) return api(req, res, url);
+  if (url === "/ice.json") return sendJson(res, 200, { iceServers: iceServers() });
   if (url === "/stats" || url === "/stats.json") {
     let key = ""; try { key = new URL(req.url, "http://x").searchParams.get("key") || ""; } catch (e) {}
     if (process.env.STATS_KEY && key !== process.env.STATS_KEY) { res.writeHead(404); return res.end("Not found"); }
@@ -66,15 +72,83 @@ const server = http.createServer((req, res) => {
     return res.end(json ? JSON.stringify(statsData()) : STATS_PAGE);
   }
   if (url === "/" || url === "/index.html") appOpens++;
-  if (url !== "/" && url !== "/index.html") { res.writeHead(404); return res.end("Not found"); }
-  fs.readFile(INDEX, (err, buf) => {
-    if (err) { res.writeHead(500); return res.end("Missing index.html"); }
-    res.writeHead(200, { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-cache" });
-    res.end(buf);
-  });
+  return serveStatic(req, res, url);
 });
 
-const wss = new WebSocketServer({ server, maxPayload: 2048 });
+
+/* ---------- File tĩnh (index.html, css/, js/, assets/) ---------- */
+const ROOT = __dirname;
+const MIME = { ".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml", ".png": "image/png", ".jpg": "image/jpeg", ".webp": "image/webp", ".ico": "image/x-icon" };
+const GZ = new Set([".html", ".css", ".js", ".json", ".svg"]);
+const STATIC_DIRS = ["css", "js", "assets"];
+const gzCache = new Map();
+function serveStatic(req, res, url) {
+  let rel;
+  try { rel = url === "/" ? "index.html" : decodeURIComponent(url).replace(/^\/+/, ""); } catch (e) { res.writeHead(400); return res.end("Bad request"); }
+  if (rel.includes("\0")) { res.writeHead(400); return res.end("Bad request"); }
+  const file = path.normalize(path.join(ROOT, rel));
+  const norm = path.relative(ROOT, file);                 // đường dẫn thật sau khi bỏ ../
+  const top = norm.split(path.sep)[0];
+  const okPath = norm === "index.html" || (STATIC_DIRS.includes(top) && !norm.startsWith("..") && !norm.split(path.sep).some(p => p.startsWith(".")));
+  if (!okPath) { res.writeHead(404); return res.end("Not found"); }
+  fs.stat(file, (e, st) => {
+    if (e || !st.isFile()) { res.writeHead(404); return res.end("Not found"); }
+    const ext = path.extname(file).toLowerCase();
+    const heads = { "Content-Type": MIME[ext] || "application/octet-stream", "Cache-Control": ext === ".svg" || ext === ".png" ? "public, max-age=3600" : "no-cache" };
+    fs.readFile(file, (err, buf) => {
+      if (err) { res.writeHead(500); return res.end("Lỗi đọc file"); }
+      if (GZ.has(ext) && /\bgzip\b/.test(req.headers["accept-encoding"] || "")) {
+        const k = file + ":" + st.mtimeMs; let z = gzCache.get(k);
+        if (!z) { z = zlib.gzipSync(buf); gzCache.set(k, z); if (gzCache.size > 200) gzCache.delete(gzCache.keys().next().value); }
+        heads["Content-Encoding"] = "gzip"; heads["Vary"] = "Accept-Encoding"; res.writeHead(200, heads); return res.end(z);
+      }
+      res.writeHead(200, heads); res.end(buf);
+    });
+  });
+}
+function sendJson(res, code, obj) { res.writeHead(code, { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" }); res.end(JSON.stringify(obj)); }
+function iceServers() {
+  const list = [{ urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302"] }];
+  if (process.env.TURN_URLS) list.push({ urls: process.env.TURN_URLS.split(",").map(x => x.trim()).filter(Boolean), username: process.env.TURN_USER || "", credential: process.env.TURN_PASS || "" });
+  return list;
+}
+
+/* ---------- API tài khoản / điểm / shop ---------- */
+function readBody(req) {
+  return new Promise((resolve, reject) => {
+    let n = 0; const chunks = [];
+    req.on("data", c => { n += c.length; if (n > 4096) { reject(Object.assign(new Error("Dữ liệu quá lớn."), { status: 413 })); req.destroy(); } else chunks.push(c); });
+    req.on("end", () => { try { resolve(chunks.length ? JSON.parse(Buffer.concat(chunks).toString("utf8")) : {}); } catch (e) { reject(Object.assign(new Error("Dữ liệu không hợp lệ."), { status: 400 })); } });
+    req.on("error", reject);
+  });
+}
+const clientIp = req => String(req.headers["x-forwarded-for"] || req.socket.remoteAddress || "").split(",")[0].trim();
+async function api(req, res, url) {
+  try {
+    const key = accounts.verify((req.headers.authorization || "").replace(/^Bearer\s+/i, ""));
+    if (req.method === "GET" && url === "/api/me") { if (!key) return sendJson(res, 401, { error: "Phiên đăng nhập đã hết hạn." }); return sendJson(res, 200, { wallet: accounts.walletOf(key) }); }
+    if (req.method !== "POST") return sendJson(res, 404, { error: "Not found" });
+    const b = await readBody(req);
+    if (url === "/api/register") return sendJson(res, 200, accounts.register(b.name, b.password, clientIp(req)));
+    if (url === "/api/login") return sendJson(res, 200, accounts.login(b.name, b.password, clientIp(req)));
+    if (!key) return sendJson(res, 401, { error: "Bạn cần đăng nhập (tài khoản khách không lưu điểm)." });
+    if (url === "/api/equip") return sendJson(res, 200, { wallet: accounts.equip(key, String(b.id || "")) });
+    if (url === "/api/buy") return sendJson(res, 200, { wallet: accounts.buy(key, String(b.id || "")) });
+    if (url === "/api/award") return sendJson(res, 200, accounts.offlineAward(key, String(b.kind || ""), b));
+    return sendJson(res, 404, { error: "Not found" });
+  } catch (e) {
+    sendJson(res, e.status || 500, { error: e.status ? e.message : "Lỗi máy chủ." });
+    if (!e.status) console.error(e);
+  }
+}
+const avOf = ws => (ws.acct ? accounts.avatarOf(ws.acct) : "a0");
+function reward(room, i, pts, why) {
+  const ws = room.players[i]; if (!ws || !ws.acct) return;
+  const r = accounts.award(ws.acct, pts, why);
+  if (r) send(ws, { t: "w:upd", wallet: r.wallet, gain: r.gain, why: r.why });
+}
+
+const wss = new WebSocketServer({ server, maxPayload: 16384 });
 const rooms = new Map();
 const CODE_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ";
 
@@ -89,7 +163,7 @@ function send(ws, obj) { if (ws && ws.readyState === 1) ws.send(JSON.stringify(o
 function both(room, obj) { room.players.forEach(p => send(p, obj)); }
 function cleanName(n, fb) { n = String(n || "").replace(/[<>]/g, "").trim().slice(0, 14); return n || fb; }
 function roomInfo(room) {
-  room.players.forEach((p, i) => send(p, { t: "room", code: room.code, you: i, names: room.names, full: !!(room.players[0] && (room.players[1] || room.bot)), bot: !!room.bot }));
+  room.players.forEach((p, i) => send(p, { t: "room", code: room.code, you: i, names: room.names, avs: room.avs, full: !!(room.players[0] && (room.players[1] || room.bot)), bot: !!room.bot }));
 }
 function clearTimers(room) { room.timers.forEach(clearTimeout); room.timers = []; }
 function later(room, fn, ms) { room.timers.push(setTimeout(fn, ms)); }
@@ -149,10 +223,14 @@ function endRound(room) {
   both(room, { t: "result", n: room.qi + 1, ci: q.ci, res, scores: room.scores });
   later(room, () => {
     if (room.qi < ROUNDS - 1) { room.qi++; startRound(room); }
-    else { room.phase = "ended"; both(room, { t: "end", scores: room.scores, log: room.log, names: room.names }); }
+    else {
+      room.phase = "ended"; both(room, { t: "end", scores: room.scores, log: room.log, names: room.names });
+      room.players.forEach((p, i) => { if (p) reward(room, i, room.scores[i], "Var Nhau"); });
+    }
   }, RESULT_MS);
 }
 function leave(ws) {
+  voice.drop(ws);
   const room = ws.room; if (!room) return;
   ws.room = null;
   const i = room.players.indexOf(ws);
@@ -194,19 +272,25 @@ wss.on("connection", ws => {
   ws.on("message", raw => {
     let m; try { m = JSON.parse(raw); } catch { return; }
     if (!m || typeof m.t !== "string") return;
+    if (m.t === "auth") {
+      const k = accounts.verify(String(m.token || ""));
+      ws.acct = k || null;
+      return send(ws, k ? { t: "auth:ok", wallet: accounts.walletOf(k) } : { t: "auth:fail" });
+    }
+    if (m.t.startsWith("v:")) return voice.handle(ws, m);
     if (m.t === "c:msg" || m.t === "c:emo") return chatRelay(ws, m);
     if (m.t.startsWith("m:") || m.t.startsWith("tl:") || m.t.startsWith("hb:") || m.t.startsWith("cr:")) return multi.handle(ws, m);
     if (m.t === "create" || m.t === "bot" || m.t === "join") multi.leave(ws);
     if (m.t === "create") {
       leave(ws);
       const code = newCode(); if (!code) return send(ws, { t: "err", msg: "Máy chủ đang đầy, thử lại sau." });
-      const room = { code, players: [ws, null], names: [cleanName(m.name, "Người chơi 1"), ""], phase: "lobby", timers: [], scores: [0, 0], again: [false, false] };
+      const room = { code, players: [ws, null], names: [cleanName(m.name, "Người chơi 1"), ""], avs: [avOf(ws), "a0"], phase: "lobby", timers: [], scores: [0, 0], again: [false, false] };
       rooms.set(code, room); ws.room = room; roomInfo(room);
     } else if (m.t === "bot") {
       leave(ws);
       const b = BOTS[m.level] || BOTS.medium;
       const code = newCode(); if (!code) return send(ws, { t: "err", msg: "Máy chủ đang đầy, thử lại sau." });
-      const room = { code, players: [ws, null], names: [cleanName(m.name, "Người chơi 1"), b.n], phase: "lobby", timers: [], scores: [0, 0], again: [false, false], bot: b };
+      const room = { code, players: [ws, null], names: [cleanName(m.name, "Người chơi 1"), b.n], avs: [avOf(ws), "hym"], phase: "lobby", timers: [], scores: [0, 0], again: [false, false], bot: b };
       rooms.set(code, room); ws.room = room; roomInfo(room);
       later(room, () => startGame(room), 700);
     } else if (m.t === "join") {
@@ -217,7 +301,7 @@ wss.on("connection", ws => {
       if (room.bot || room.players[1] || room.phase !== "lobby") return send(ws, { t: "err", msg: "Phòng này đã đủ người." });
       let nm = cleanName(m.name, "Người chơi 2");
       if (nm === room.names[0]) nm = nm.slice(0, 11) + " (2)";
-      room.players[1] = ws; room.names[1] = nm; ws.room = room;
+      room.players[1] = ws; room.names[1] = nm; room.avs[1] = avOf(ws); ws.room = room;
       roomInfo(room);
       later(room, () => startGame(room), 900);
     } else if (m.t === "ans") {
@@ -241,4 +325,6 @@ setInterval(() => {
   wss.clients.forEach(ws => { if (!ws.alive) return ws.terminate(); ws.alive = false; ws.ping(); });
 }, 25000);
 
-server.listen(PORT, () => console.log("Đấu Trí online chạy ở cổng " + PORT));
+accounts.init();
+server.listen(PORT, () => console.log("Var Nhau chạy ở cổng " + PORT));
+for (const sig of ["SIGTERM", "SIGINT"]) process.on(sig, () => { accounts.shutdown().finally(() => process.exit(0)); });

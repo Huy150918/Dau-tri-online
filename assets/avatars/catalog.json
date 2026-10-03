@@ -1,0 +1,153 @@
+{
+ "_ghi_chu": "Sửa giá ở đây. exchange = bao nhiêu điểm chơi đổi 1 điểm shop. defaultPrice = giá mặc định (tính bằng điểm shop). 100 điểm shop = 5.000 điểm chơi. Avatar có free:true là tặng sẵn, hidden:true là không bán.",
+ "exchange": 50,
+ "defaultPrice": 100,
+ "avatars": [
+  {
+   "id": "a0",
+   "name": "Tân binh",
+   "ring": [
+    "#8ea0b8",
+    "#5b6b85"
+   ],
+   "free": true
+  },
+  {
+   "id": "cat",
+   "name": "Mèo Mun",
+   "ring": [
+    "#ffb347",
+    "#ff7a3d"
+   ]
+  },
+  {
+   "id": "dog",
+   "name": "Cún Con",
+   "ring": [
+    "#d9a066",
+    "#a8702f"
+   ]
+  },
+  {
+   "id": "fox",
+   "name": "Cáo Lửa",
+   "ring": [
+    "#ff9a5a",
+    "#e8452c"
+   ]
+  },
+  {
+   "id": "panda",
+   "name": "Gấu Trúc",
+   "ring": [
+    "#9aa5b1",
+    "#4b5563"
+   ]
+  },
+  {
+   "id": "tiger",
+   "name": "Hổ Con",
+   "ring": [
+    "#ffc233",
+    "#f08c00"
+   ]
+  },
+  {
+   "id": "lion",
+   "name": "Sư Tử",
+   "ring": [
+    "#ffd54a",
+    "#c98a00"
+   ]
+  },
+  {
+   "id": "dragon",
+   "name": "Rồng Nhỏ",
+   "ring": [
+    "#4ade80",
+    "#15803d"
+   ]
+  },
+  {
+   "id": "uni",
+   "name": "Kỳ Lân",
+   "ring": [
+    "#f0abfc",
+    "#7dd3fc"
+   ]
+  },
+  {
+   "id": "frog",
+   "name": "Ếch Xanh",
+   "ring": [
+    "#86efac",
+    "#16a34a"
+   ]
+  },
+  {
+   "id": "peng",
+   "name": "Cánh Cụt",
+   "ring": [
+    "#7dd3fc",
+    "#2563eb"
+   ]
+  },
+  {
+   "id": "robot",
+   "name": "Robot",
+   "ring": [
+    "#a5b4fc",
+    "#4f46e5"
+   ]
+  },
+  {
+   "id": "alien",
+   "name": "Alien",
+   "ring": [
+    "#a7f3d0",
+    "#0d9488"
+   ]
+  },
+  {
+   "id": "cool",
+   "name": "Ngầu Lòi",
+   "ring": [
+    "#fde047",
+    "#ea580c"
+   ]
+  },
+  {
+   "id": "ninja",
+   "name": "Ninja",
+   "ring": [
+    "#94a3b8",
+    "#1e293b"
+   ]
+  },
+  {
+   "id": "wizard",
+   "name": "Phù Thủy",
+   "ring": [
+    "#c4b5fd",
+    "#6d28d9"
+   ]
+  },
+  {
+   "id": "king",
+   "name": "Vua Trò Chơi",
+   "ring": [
+    "#fde68a",
+    "#d97706"
+   ]
+  },
+  {
+   "id": "hym",
+   "name": "Anh HyM",
+   "ring": [
+    "#fde68a",
+    "#e11d48"
+   ],
+   "hidden": true
+  }
+ ]
+}

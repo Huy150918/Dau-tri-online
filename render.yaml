@@ -6,3 +6,11 @@ services:
     buildCommand: npm install
     startCommand: npm start
     healthCheckPath: /healthz
+    envVars:
+      # Điền trên Render (Environment). Không để mật khẩu trong file này.
+      - key: UPSTASH_REDIS_REST_URL     # nơi lưu tài khoản và điểm (xem README)
+        sync: false
+      - key: UPSTASH_REDIS_REST_TOKEN
+        sync: false
+      - key: STATS_KEY                  # khoá xem trang /stats (không bắt buộc)
+        sync: false

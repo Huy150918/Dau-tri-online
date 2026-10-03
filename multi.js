@@ -1,6 +1,8 @@
 "use strict";
 // Phòng nhiều người: Tiến lên (2-4 người) và Đuổi Hình Bắt Chữ (2 người).
 // Thông điệp bắt đầu bằng "m:" (chung), "tl:" (Tiến lên), "hb:" (Đuổi hình bắt chữ).
+const accounts = require("./accounts");
+const voice = require("./voice");
 const CODE_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ";
 const rooms = new Map();
 
@@ -15,11 +17,17 @@ function newCode() {
   }
   return null;
 }
+const avOf = ws => (ws.acct ? accounts.avatarOf(ws.acct) : "a0");
+function reward(room, i, pts, why) {
+  const ws = room.players[i]; if (!ws || !ws.acct) return;
+  const r = accounts.award(ws.acct, pts, why);
+  if (r) send(ws, { t: "w:upd", wallet: r.wallet, gain: r.gain, why: r.why });
+}
 function clearTimers(room) { room.timers.forEach(clearTimeout); room.timers = []; }
 function later(room, fn, ms) { room.timers.push(setTimeout(fn, ms)); }
 function err(ws, msg) { send(ws, { t: "m:err", msg }); }
 function roomInfo(room) {
-  room.players.forEach((p, i) => send(p, { t: "m:room", game: room.game, code: room.code, you: i, names: room.names, max: room.max, full: room.players.length === room.max }));
+  room.players.forEach((p, i) => send(p, { t: "m:room", game: room.game, code: room.code, you: i, names: room.names, avs: room.avs, max: room.max, full: room.players.length === room.max }));
 }
 
 /* ---------- Phòng chung ---------- */
@@ -28,7 +36,7 @@ function create(ws, m) {
   const game = m.game === "hb" ? "hb" : m.game === "cr" ? "cr" : "tl";
   const max = game === "tl" ? Math.min(4, Math.max(2, parseInt(m.n, 10) || 2)) : 2;
   const code = newCode(); if (!code) return err(ws, "Máy chủ đang đầy, thử lại sau.");
-  const room = { code, game, max, players: [ws], names: [cleanName(m.name, "Người chơi 1")], phase: "lobby", timers: [], again: [] };
+  const room = { code, game, max, players: [ws], names: [cleanName(m.name, "Người chơi 1")], avs: [avOf(ws)], phase: "lobby", timers: [], again: [] };
   rooms.set(code, room); ws.mroom = room; roomInfo(room);
 }
 function join(ws, m) {
@@ -40,18 +48,19 @@ function join(ws, m) {
   if (room.phase !== "lobby" || room.players.length >= room.max) return err(ws, "Phòng này đã đủ người.");
   let nm = cleanName(m.name, "Người chơi " + (room.players.length + 1));
   if (room.names.includes(nm)) nm = nm.slice(0, 11) + " (" + (room.players.length + 1) + ")";
-  room.players.push(ws); room.names.push(nm); ws.mroom = room;
+  room.players.push(ws); room.names.push(nm); room.avs.push(avOf(ws)); ws.mroom = room;
   roomInfo(room);
   if (room.players.length === room.max) later(room, () => start(room), 900);
 }
 function start(room) { if (room.game === "tl") tlStart(room); else if (room.game === "cr") crStart(room); else hbStart(room); }
 function leave(ws) {
+  voice.drop(ws);
   const room = ws.mroom; if (!room) return;
   ws.mroom = null;
   const i = room.players.indexOf(ws); if (i < 0) return;
   clearTimers(room);
   if (room.phase === "lobby") {
-    room.players.splice(i, 1); room.names.splice(i, 1);
+    room.players.splice(i, 1); room.names.splice(i, 1); room.avs.splice(i, 1);
     if (!room.players.length) rooms.delete(room.code); else roomInfo(room);
   } else {
     room.players.forEach((p, k) => { if (k !== i && p) { send(p, { t: "m:left", name: room.names[i] }); p.mroom = null; } });
@@ -123,6 +132,7 @@ function tlPlay(room, i, ids) {
   room.last = { ids: ids.slice().sort((a, b) => a - b), by: i };
   if (!room.hands[i].length) {
     room.phase = "ended"; room.winner = i; tlBroadcast(room);
+    room.players.forEach((p, k) => reward(room, k, k === i ? 400 : 100, "Tiến lên"));
     return both(room, { t: "tl:end", winner: i, names: room.names, counts: room.hands.map(h => h.length) });
   }
   tlAdvance(room);
@@ -177,7 +187,7 @@ function hbRes(room, w) {
   both(room, { t: "hb:res", n: room.qi + 1, answer: room.qs[room.qi].a[0], winner: w, scores: room.scores });
   later(room, () => {
     if (room.qi < room.qs.length - 1) { room.qi++; hbQ(room); }
-    else { room.phase = "ended"; both(room, { t: "hb:end", scores: room.scores, names: room.names }); }
+    else { room.phase = "ended"; both(room, { t: "hb:end", scores: room.scores, names: room.names }); room.players.forEach((p, k) => reward(room, k, (room.scores[k] || 0) * 5, "Đuổi hình")); }
   }, RES_MS);
 }
 
@@ -217,8 +227,8 @@ function crMove(room, i, r, c) {
   const k = r * CR_N + c; if (room.board[k]) return;
   room.board[k] = i + 1; room.last = [r, c]; room.moves++;
   const line = crWin(room.board, r, c, i + 1);
-  if (line) { room.phase = "ended"; room.wins[i]++; crBroadcast(room, { winner: i, line }); return; }
-  if (room.moves >= CR_N * CR_N) { room.phase = "ended"; crBroadcast(room, { winner: -1, line: null }); return; }
+  if (line) { room.phase = "ended"; room.wins[i]++; crBroadcast(room, { winner: i, line }); room.players.forEach((p, k) => reward(room, k, k === i ? 300 : 50, "Cờ ca rô")); return; }
+  if (room.moves >= CR_N * CR_N) { room.phase = "ended"; crBroadcast(room, { winner: -1, line: null }); room.players.forEach((p, k) => reward(room, k, 100, "Cờ ca rô")); return; }
   room.turn = 1 - i; crBroadcast(room, null);
 }
 
