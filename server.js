@@ -115,13 +115,39 @@ function leave(ws) {
   rooms.delete(room.code);
 }
 
+
+// Chat và thả icon: dùng chung cho mọi phòng (Var Nhau, Tiến lên, Đuổi hình bắt chữ, Cờ ca rô)
+const CHAT_EMO = new Set(["😂", "😍", "😎", "😡", "😭", "😱", "🤔", "👍", "👎", "👏", "🔥", "❤️"]);
+function chatRelay(ws, m) {
+  const room = ws.room || ws.mroom;
+  if (!room || !Array.isArray(room.players)) return;
+  const idx = room.players.indexOf(ws); if (idx < 0) return;
+  const now = Date.now(), emo = m.t === "c:emo";
+  const key = emo ? "cEmo" : "cMsg", lim = emo ? [10, 6000] : [6, 8000];
+  ws[key] = (ws[key] || []).filter(t => now - t < lim[1]);
+  if (ws[key].length >= lim[0]) return send(ws, { t: "c:slow" });
+  let payload;
+  if (emo) {
+    if (!CHAT_EMO.has(m.e)) return;
+    payload = { t: "c:emo", e: m.e };
+  } else {
+    const text = String(m.text || "").replace(/[<>]/g, "").replace(/\s+/g, " ").trim().slice(0, 120);
+    if (!text) return;
+    payload = { t: "c:msg", text };
+  }
+  ws[key].push(now);
+  const name = (room.names && room.names[idx]) || "Người chơi";
+  room.players.forEach((p, j) => send(p, Object.assign({ from: idx, name, mine: j === idx }, payload)));
+}
+
 wss.on("connection", ws => {
   ws.alive = true; ws.room = null;
   ws.on("pong", () => { ws.alive = true; });
   ws.on("message", raw => {
     let m; try { m = JSON.parse(raw); } catch { return; }
     if (!m || typeof m.t !== "string") return;
-    if (m.t.startsWith("m:") || m.t.startsWith("tl:") || m.t.startsWith("hb:")) return multi.handle(ws, m);
+    if (m.t === "c:msg" || m.t === "c:emo") return chatRelay(ws, m);
+    if (m.t.startsWith("m:") || m.t.startsWith("tl:") || m.t.startsWith("hb:") || m.t.startsWith("cr:")) return multi.handle(ws, m);
     if (m.t === "create" || m.t === "bot" || m.t === "join") multi.leave(ws);
     if (m.t === "create") {
       leave(ws);
